@@ -1,0 +1,12 @@
+language: ruby
+sudo: false
+
+env:
+  - DATABASE_ADAPTER=postgresql
+
+rvm:
+  - 2.0.0
+
+
+
+
