@@ -1,0 +1,13 @@
+language: ruby
+sudo: false
+script: "bundle exec rake"
+
+env:
+  - DATABASE_ADAPTER=postgresql
+
+rvm:
+  - 2.0.0
+
+
+
+
