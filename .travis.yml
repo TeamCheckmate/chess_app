@@ -2,6 +2,9 @@ language: ruby
 sudo: false
 script: "bundle exec rake"
 
+before_script:
+- psql -c 'create database travic_ci_test;' -U postgres
+
 env:
   - DATABASE_ADAPTER=postgresql
 
