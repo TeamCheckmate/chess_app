@@ -10,7 +10,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: chess_app_test
+  database: travis_ci_test
   pool: 5
   username: postgres
   password: password
