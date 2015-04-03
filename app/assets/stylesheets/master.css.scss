@@ -1,0 +1,19 @@
+#chess_board div{
+     width:60px;height:60px;border:1px solid black;
+     float:left; 
+}
+
+#chess_board div:nth-of-type(16n+16),
+#chess_board div:nth-of-type(16n+14),
+#chess_board div:nth-of-type(16n+12),
+#chess_board div:nth-of-type(16n+10),
+#chess_board div:nth-of-type(16n+7),
+#chess_board div:nth-of-type(16n+5),
+#chess_board div:nth-of-type(16n+3),
+#chess_board div:nth-of-type(16n+1){   
+    background-color:black;
+}
+
+#chess_board div:nth-of-type(8n+1){   
+    clear:left;
+}
