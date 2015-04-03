@@ -31,6 +31,11 @@ gem 'bootstrap-sass', '~> 3.3.4'
 
 gem 'autoprefixer-rails'
 
+group :test do 
+  gem "factory_girl_rails", "~> 4.0"
+end
+
+
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
 
@@ -45,6 +50,4 @@ gem 'autoprefixer-rails'
 
 
 gem 'devise', '>= 3.2.4'
-
-gem "factory_girl_rails", "~> 4.0"
 

@@ -1,13 +1,14 @@
-FactoryGirl.define do 
-	factory :user do
-		sequence :email do |n|
-			"email#{n}@gmail.com"
-		end
-		password "omgomgomg"
-		password_confirmation "omgomgomg"
-	end 
+FactoryGirl.define do
+  factory :user do
+    sequence :email do |n|
+      "person#{n}@example.com"
+    end
+    password  "password"
+    password_confirmation "password"
+  end
 
-	factory :game do
-		association :user
-	end
+  factory :game do
+    association :black_player, factory: :user 
+    association :white_player, factory: :user
+  end
 end
