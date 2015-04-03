@@ -5,7 +5,7 @@ class GamesController < ApplicationController
 	end
 
 	def create
-		@game = current_user.create(game_params)
+		@game = Game.create(:white_player_id => current_user.id)
 	end
 	
 	def show 
