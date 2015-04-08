@@ -58,4 +58,35 @@ class Game < ActiveRecord::Base
   #   @board
   # end
 
+  def is_obstructed(initial_x: 0, initial_y: 0, final_x: 0, final_y: 0)
+
+    if initial_x == final_x
+      is_obstructed_vertical(x: initial_x, initial_y: initial_y, final_y: final_y)
+    end
+    
+  end
+
+  def is_obstructed_vertical(x: 0, initial_y: 0, final_y: 0)
+    pieces_vertical = self.pieces.where(x_coord: x)
+    if initial_y == final_y 
+      return raise "Not Allowed"
+    end
+
+    if final_y > initial_y 
+      upper_y = final_y 
+      lower_y = initial_y
+    else 
+      upper_y = initial_y
+      lower_y = final_y
+    end
+
+    pieces_vertical.each do |piece|
+      if piece.y_coord.between?(lower_y, upper_y)
+        return true
+      end
+    end
+
+    false
+  end
+
 end

@@ -19,6 +19,8 @@ class GamesControllerTest < ActionController::TestCase
   	assert_difference 'Game.count' do 
   		post :create, {:game => {:black_player_id => nil}}
   	end
+
+  	assert_redirected_to game_path(Game.last)
   end
 
 end
