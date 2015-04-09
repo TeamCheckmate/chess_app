@@ -47,4 +47,12 @@ class GameTest < ActiveSupport::TestCase
     end
   end
 
+  test "is_obstructed_horizontal_true" do
+    game = FactoryGirl.create(:game)
+    game.pieces.destroy_all
+    
+    p1 = Piece.create(x_coord: 0, y_coord: 0, game: game)
+    
+    assert_equal true, game.is_obstructed(initial_x: 1, initial_y: 3, final_x: 4, final_y: 3)
+  end  
 end

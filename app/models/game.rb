@@ -62,15 +62,19 @@ class Game < ActiveRecord::Base
 
     if initial_x == final_x
       is_obstructed_vertical(x: initial_x, initial_y: initial_y, final_y: final_y)
+    elsif initial_y == final_y
+      is_obstructed_horizontal(y: initial_y, initial_x: initial_x, final_x: final_y)
     end
-    
   end
 
   def is_obstructed_vertical(x: 0, initial_y: 0, final_y: 0)
-    pieces_vertical = self.pieces.where(x_coord: x)
+    
     if initial_y == final_y 
       return raise "Not Allowed"
     end
+
+    #get all pieces on column, x
+    pieces_vertical = self.pieces.where(x_coord: x)
 
     if final_y > initial_y 
       upper_y = final_y 
@@ -87,6 +91,18 @@ class Game < ActiveRecord::Base
     end
 
     false
+  end
+
+  def is_obstructed_horizontal(y: 0, initial_x: 0, final_x: 0)
+
+    if initial_x == final_x
+      return raise "Not Allowed"
+    end
+
+    #get all pieces on row, y
+    pieces_horizontal = self.pieces.where(y_coord: y)
+
+    true
   end
 
 end
