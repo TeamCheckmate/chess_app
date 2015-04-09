@@ -4,40 +4,45 @@ class Game < ActiveRecord::Base
   has_many   :pieces
   after_create :populate_the_pieces!
 
+  
   INITIAL_PIECE_LOCATIONS = [
-    {:piece_type => "Rook", :x_coord => 0, :y_coord => 7, :color => 'black'},
-    {:piece_type => "Rook", :x_coord => 7, :y_coord => 7, :color => 'black'},
-    {:piece_type => "Rook", :x_coord => 0, :y_coord => 0, :color => 'white'},
-    {:piece_type => "Rook", :x_coord => 7, :y_coord => 0, :color => 'white'},
-    {:piece_type => "Knight", :x_coord => 1, :y_coord => 7, :color => 'black'},
-    {:piece_type => "Knight", :x_coord => 6, :y_coord => 7, :color => 'black'},
-    {:piece_type => "Knight", :x_coord => 1, :y_coord => 0, :color => 'white'},
-    {:piece_type => "Knight", :x_coord => 6, :y_coord => 0, :color => 'white'},
-    {:piece_type => "Bishop", :x_coord => 2, :y_coord => 7, :color => 'black'},
-    {:piece_type => "Bishop", :x_coord => 5, :y_coord => 7, :color => 'black'},
-    {:piece_type => "Bishop", :x_coord => 2, :y_coord => 0, :color => 'white'},
-    {:piece_type => "Bishop", :x_coord => 5, :y_coord => 0, :color => 'white'},
-    {:piece_type => "Queen", :x_coord => 3, :y_coord => 7, :color => 'black'},
-    {:piece_type => "Queen", :x_coord => 3, :y_coord => 0, :color => 'white'},
-    {:piece_type => "King", :x_coord => 4, :y_coord => 7, :color => 'black'},
-    {:piece_type => "King", :x_coord => 4, :y_coord => 0, :color => 'white'},
-    {:piece_type => "Pawn", :x_coord => 0, :y_coord => 6, :color => 'black'},
-    {:piece_type => "Pawn", :x_coord => 1, :y_coord => 6, :color => 'black'},
-    {:piece_type => "Pawn", :x_coord => 2, :y_coord => 6, :color => 'black'},
-    {:piece_type => "Pawn", :x_coord => 3, :y_coord => 6, :color => 'black'},
-    {:piece_type => "Pawn", :x_coord => 4, :y_coord => 6, :color => 'black'},
-    {:piece_type => "Pawn", :x_coord => 5, :y_coord => 6, :color => 'black'},
-    {:piece_type => "Pawn", :x_coord => 6, :y_coord => 6, :color => 'black'},
-    {:piece_type => "Pawn", :x_coord => 7, :y_coord => 6, :color => 'black'},
-    {:piece_type => "Pawn", :x_coord => 0, :y_coord => 1, :color => 'white'},
-    {:piece_type => "Pawn", :x_coord => 1, :y_coord => 1, :color => 'white'},
-    {:piece_type => "Pawn", :x_coord => 2, :y_coord => 1, :color => 'white'},
-    {:piece_type => "Pawn", :x_coord => 3, :y_coord => 1, :color => 'white'},
-    {:piece_type => "Pawn", :x_coord => 4, :y_coord => 1, :color => 'white'},
-    {:piece_type => "Pawn", :x_coord => 5, :y_coord => 1, :color => 'white'},
-    {:piece_type => "Pawn", :x_coord => 6, :y_coord => 1, :color => 'white'},
-    {:piece_type => "Pawn", :x_coord => 7, :y_coord => 1, :color => 'white'}
 
+    {:y_coord => 7, :x_coord => 0, :piece_type => "Rook", :color => 'black', :image_name => 'pieces/br.png'},
+    {:y_coord => 7, :x_coord => 1, :piece_type => "Knight", :color => 'black', :image_name => 'pieces/bn.png'},
+    {:y_coord => 7, :x_coord => 2, :piece_type => "Bishop", :color => 'black', :image_name => 'pieces/bb.png'},
+    {:y_coord => 7, :x_coord => 3, :piece_type => "King", :color => 'black', :image_name => 'pieces/bk.png'},
+    {:y_coord => 7, :x_coord => 4, :piece_type => "Queen", :color => 'black', :image_name => 'pieces/bq.png'},
+    {:y_coord => 7, :x_coord => 5, :piece_type => "Bishop", :color => 'black', :image_name => 'pieces/bb.png'},
+    {:y_coord => 7, :x_coord => 6, :piece_type => "Knight", :color => 'black', :image_name => 'pieces/bn.png'},
+    {:y_coord => 7, :x_coord => 7, :piece_type => "Rook", :color => 'black', :image_name => 'pieces/br.png'},
+
+    {:y_coord => 6, :x_coord => 0, :piece_type => "Pawn", :color => 'black', :image_name => 'pieces/bp.png'},
+    {:y_coord => 6, :x_coord => 1, :piece_type => "Pawn", :color => 'black', :image_name => 'pieces/bp.png'},
+    {:y_coord => 6, :x_coord => 2, :piece_type => "Pawn", :color => 'black', :image_name => 'pieces/bp.png'},
+    {:y_coord => 6, :x_coord => 3, :piece_type => "Pawn", :color => 'black', :image_name => 'pieces/bp.png'},
+    {:y_coord => 6, :x_coord => 4, :piece_type => "Pawn", :color => 'black', :image_name => 'pieces/bp.png'},
+    {:y_coord => 6, :x_coord => 5, :piece_type => "Pawn", :color => 'black', :image_name => 'pieces/bp.png'},
+    {:y_coord => 6, :x_coord => 6, :piece_type => "Pawn", :color => 'black', :image_name => 'pieces/bp.png'},
+    {:y_coord => 6, :x_coord => 7, :piece_type => "Pawn", :color => 'black', :image_name => 'pieces/bp.png'},
+
+
+    {:y_coord => 1, :x_coord => 0, :piece_type => "Pawn", :color => 'white', :image_name => 'pieces/wp.png'},
+    {:y_coord => 1, :x_coord => 1, :piece_type => "Pawn", :color => 'white', :image_name => 'pieces/wp.png'},
+    {:y_coord => 1, :x_coord => 2, :piece_type => "Pawn", :color => 'white', :image_name => 'pieces/wp.png'},
+    {:y_coord => 1, :x_coord => 3, :piece_type => "Pawn", :color => 'white', :image_name => 'pieces/wp.png'},
+    {:y_coord => 1, :x_coord => 4, :piece_type => "Pawn", :color => 'white', :image_name => 'pieces/wp.png'},
+    {:y_coord => 1, :x_coord => 5, :piece_type => "Pawn", :color => 'white', :image_name => 'pieces/wp.png'},
+    {:y_coord => 1, :x_coord => 6, :piece_type => "Pawn", :color => 'white', :image_name => 'pieces/wp.png'},
+    {:y_coord => 1, :x_coord => 7, :piece_type => "Pawn", :color => 'white', :image_name => 'pieces/wp.png'},
+
+    {:y_coord => 0, :x_coord => 0, :piece_type => "Rook", :color => 'white', :image_name => 'pieces/wr.png'},
+    {:y_coord => 0, :x_coord => 1, :piece_type => "Knight", :color => 'white', :image_name => 'pieces/wn.png'},
+    {:y_coord => 0, :x_coord => 2, :piece_type => "Bishop", :color => 'white', :image_name => 'pieces/wb.png'},
+    {:y_coord => 0, :x_coord => 3, :piece_type => "King", :color => 'white', :image_name => 'pieces/wk.png'},
+    {:y_coord => 0, :x_coord => 4, :piece_type => "Queen", :color => 'white', :image_name => 'pieces/wq.png'},
+    {:y_coord => 0, :x_coord => 5, :piece_type => "Bishop", :color => 'white', :image_name => 'pieces/wb.png'},
+    {:y_coord => 0, :x_coord => 6, :piece_type => "Knight", :color => 'white', :image_name => 'pieces/wn.png'},
+    {:y_coord => 0, :x_coord => 7, :piece_type => "Rook", :color => 'white', :image_name => 'pieces/wr.png'},
   ]
   def populate_the_pieces!
       INITIAL_PIECE_LOCATIONS.each do |piece|
