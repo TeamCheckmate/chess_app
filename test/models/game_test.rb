@@ -19,4 +19,32 @@ class GameTest < ActiveSupport::TestCase
     assert_equal 2, g.pieces.where(:piece_type => "King").count
     assert_equal 16, g.pieces.where(:piece_type => "Pawn").count
   end
+
+
+  test "is_obstructed_vertical_true" do
+    game = FactoryGirl.create(:game)
+    game.pieces.destroy_all
+    
+    p1 = Piece.create(x_coord: 3, y_coord: 3, game: game)
+    
+    assert_equal true, game.is_obstructed(initial_x: 3, initial_y: 1, final_x: 3, final_y: 6)
+  end
+
+  test "is_obstructed_vertical_false" do
+    game = FactoryGirl.create(:game)
+    game.pieces.destroy_all
+    
+    p1 = Piece.create(x_coord: 0, y_coord: 0, game: game)
+    
+    assert_equal false, game.is_obstructed(initial_x: 3, initial_y: 1, final_x: 3, final_y: 6)
+  end
+
+  test "is_obstructed_vertical_same_coord_error" do
+    game = FactoryGirl.create(:game)
+    
+    assert RuntimeError do
+     game.is_obstructed(initial_x: 3, initial_y: 1, final_x: 3, final_y: 1)
+    end
+  end
+
 end
