@@ -1,1 +1,2 @@
-class Bishop < Piece; end
+class Bishop < Piece 
+end
