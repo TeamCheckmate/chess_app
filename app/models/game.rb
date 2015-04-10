@@ -69,6 +69,8 @@ class Game < ActiveRecord::Base
       is_obstructed_vertical(x: initial_x, initial_y: initial_y, final_y: final_y)
     elsif initial_y == final_y
       is_obstructed_horizontal(y: initial_y, initial_x: initial_x, final_x: final_y)
+    else
+      is_obstructed_diagonal(initial_x: initial_x, initial_y: initial_y, final_x: final_x, final_y: final_y)
     end
   end
 
@@ -107,7 +109,72 @@ class Game < ActiveRecord::Base
     #get all pieces on row, y
     pieces_horizontal = self.pieces.where(y_coord: y)
 
-    true
+    if final_x > initial_x 
+      upper_x = final_x 
+      lower_x = initial_x
+    else 
+      upper_x = initial_x
+      lower_x = final_x
+    end
+
+    pieces_horizontal.each do |piece|
+      if piece.x_coord.between?(lower_x, upper_x)
+        return true
+      end
+    end
+
+    false
   end
 
+  def is_obstructed_diagonal(initial_x: 0, initial_y: 0, final_x: 0, final_y: 0)
+    x = (initial_x - final_x).abs
+    y = (initial_y - final_y).abs
+
+    if x == y
+      if final_x > initial_x
+        if final_y > initial_y 
+          (initial_x+1..final_x).each do |x|
+            initial_y += 1
+            if !self.pieces.where(x_coord: x, y_coord: initial_y).empty?
+              return true
+            end
+          end
+
+          false
+        else
+          (initial_x+1..final_x).each do |x|
+            initial_y -= 1
+            if !self.pieces.where(x_coord: x, y_coord: initial_y).empty?
+              return true
+            end
+          end
+
+          false
+        end
+      else  
+        if final_y > initial_y
+          (initial_y+1..final_y).each do |y|
+            initial_x -= 1
+            if !self.pieces.where(x_coord: initial_x, y_coord: y).empty?
+              return true
+            end
+          end
+
+          false
+        else
+          (final_x..initial_x-1).reverse_each do |x|
+            initial_y -= 1
+            if !self.pieces.where(x_coord: x, y_coord: initial_y).empty?
+              return true
+            end
+          end
+          
+          false
+        end
+      end
+    else 
+      raise "Not Allowed"
+    end     
+  end
 end
+
