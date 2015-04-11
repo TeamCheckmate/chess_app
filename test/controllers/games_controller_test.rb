@@ -13,7 +13,6 @@ class GamesControllerTest < ActionController::TestCase
   end
 
   test "create_new_game" do
-    puts User.all.inspect
   	user = FactoryGirl.create(:user)
   	sign_in user
 

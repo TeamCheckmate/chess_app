@@ -112,14 +112,14 @@ class GameTest < ActiveSupport::TestCase
     assert_equal true, game.is_obstructed(initial_x: 5, initial_y: 6, final_x: 1, final_y: 2)
   end
 
-  # test "is_obstructed_random_input_error" do
-  #   game = FactoryGirl.create(:game)
-  #   game.pieces.destroy_all
+  test "is_obstructed_random_input_error" do
+    game = FactoryGirl.create(:game)
+    game.pieces.destroy_all
     
-  #   p1 = Piece.create(x_coord: 0, y_coord: 0, game: game)
+    p1 = Piece.create(x_coord: 0, y_coord: 0, game: game)
     
-  #   assert RuntimeError do
-  #    game.is_obstructed(initial_x: 3, initial_y: 3, final_x: 6, final_y: 7)
-  #   end
-  # end
+    assert RuntimeError do
+     game.is_obstructed(initial_x: 3, initial_y: 3, final_x: 6, final_y: 7)
+    end
+  end
 end

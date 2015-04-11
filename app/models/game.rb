@@ -50,122 +50,84 @@ class Game < ActiveRecord::Base
       end
   end
 
-  # def initialize
-  #   @board=Array.new(7){Array.new(7)}
-  # end
-
-  # def populate_new_board
-  #   (0..7).each do |row|
-  #     (0..7).each do |cell|
-  #       @board[row][cell]='pawn'
-  #     end
-  #   end
-  #   @board
-  # end
-
+########################
+# is_obstructed returns true if there are pieces between two coordinates
+# raise exception if the input coordinates are not in vertical, horizontal or diagonal direciton.
   def is_obstructed(initial_x: 0, initial_y: 0, final_x: 0, final_y: 0)
-
-    if initial_x == final_x
-      is_obstructed_vertical(x: initial_x, initial_y: initial_y, final_y: final_y)
-    elsif initial_y == final_y
-      is_obstructed_horizontal(y: initial_y, initial_x: initial_x, final_x: final_y)
-    else
-      is_obstructed_diagonal(initial_x: initial_x, initial_y: initial_y, final_x: final_x, final_y: final_y)
+    if initial_x == final_x    
+      vertical_horizontal(dir: :vertical, dir_coord: initial_x, initial: initial_y, final: final_y)
+    elsif initial_y == final_y 
+      vertical_horizontal(dir: :horizontal, dir_coord: initial_y, initial: initial_x, final: final_y)
+    else    
+      diagonal(initial_x: initial_x, initial_y: initial_y, final_x: final_x, final_y: final_y)
     end
   end
+   
+### helper methods 
+  # This method checks both conditions, vertical and horizontal. 
+  # By passing a directon argument, this method knows the direction it should check.
+  def vertical_horizontal(dir: :vertical, dir_coord: 0, initial: 0, final: 0)
+    # check if input is valid
+    raise "Not Allowed" if initial == final
 
-  def is_obstructed_vertical(x: 0, initial_y: 0, final_y: 0)
+    upper = [initial, final].max
+    lower = [initial, final].min
+
+    if dir == :vertical               # direction is vertical
+      pieces = self.pieces.where(x_coord: dir_coord)
+      dir = :y_coord
+    else                              # direction is horizontal
+      pieces = self.pieces.where(y_coord: dir_coord)
+      dir = :x_coord
+    end
+
+    pieces.each {|piece| return true if piece.send(dir).between?(lower,upper)}
     
-    if initial_y == final_y 
-      raise "Not Allowed"
-    end
-
-    #get all pieces on column, x
-    pieces_vertical = self.pieces.where(x_coord: x)
-
-    upper_y = [final_y, initial_y].max
-    lower_y = [final_y, initial_y].min
-
-    pieces_vertical.each do |piece|
-      return true if piece.y_coord.between?(lower_y, upper_y)
-    end
-
     false
   end
 
-  def is_obstructed_horizontal(y: 0, initial_x: 0, final_x: 0)
-
-    if initial_x == final_x
-      raise "Not Allowed"
-    end
-
-    #get all pieces on row, y
-    pieces_horizontal = self.pieces.where(y_coord: y)
-
-    if final_x > initial_x 
-      upper_x = final_x 
-      lower_x = initial_x
-    else 
-      upper_x = initial_x
-      lower_x = final_x
-    end
-
-    pieces_horizontal.each do |piece|
-      return true if piece.x_coord.between?(lower_x, upper_x)
-    end
-
-    false
-  end
-
-  def is_obstructed_diagonal(initial_x: 0, initial_y: 0, final_x: 0, final_y: 0)
+  # This method checks the diagonal direction.
+  # Exception will be raised if the input coordinates do not form a right triangle.
+  # Once we determine whether x and y coordinates increase or decrease, we can iterate through
+  # each coordinate on the diagonal accordingly. 
+  def diagonal(initial_x: 0, initial_y: 0, final_x: 0, final_y: 0)
     x = (initial_x - final_x).abs
     y = (initial_y - final_y).abs
 
-    if x == y
-      if final_x > initial_x
-        if final_y > initial_y 
-          (initial_x+1..final_x).each do |x|
-            initial_y += 1
-            if !self.pieces.where(x_coord: x, y_coord: initial_y).empty?
-              return true
-            end
-          end
+    raise "Not Allowed" if x != y       #raise an exception if it's not diagonal 
 
-          false
-        else
-          (initial_x+1..final_x).each do |x|
-            initial_y -= 1
-            if !self.pieces.where(x_coord: x, y_coord: initial_y).empty?
-              return true
-            end
-          end
-
-          false
-        end
-      else  
-        if final_y > initial_y
-          (initial_y+1..final_y).each do |y|
-            initial_x -= 1
-            if !self.pieces.where(x_coord: initial_x, y_coord: y).empty?
-              return true
-            end
-          end
-
-          false
-        else
-          (final_x..initial_x-1).reverse_each do |x|
-            initial_y -= 1
-            if !self.pieces.where(x_coord: x, y_coord: initial_y).empty?
-              return true
-            end
-          end
-          
-          false
-        end
-      end
-    else 
-      raise "Not Allowed"
-    end     
+    # determine x and y coordinate directions
+    x_dir = x_y_dir(initial: initial_x, final: final_x)
+    y_dir = x_y_dir(initial: initial_y, final: final_y)
+    
+    # iterate through the diagonal based on x and y direction
+    iterate_diagonal(x_dir: x_dir, y_dir: y_dir, initial_x: initial_x, initial_y: initial_y, final_x: final_x, final_y: final_y)
   end
+
+### helper methods for diagonal method
+  def x_y_dir(initial: 0, final: 0)
+    final > initial ? :+ : :-
+  end
+
+  def iterate_diagonal(x_dir: :+, y_dir: :+, initial_x: 0, initial_y: 0, final_x: 0, final_y: 0)
+    # determine the upper and lower bound for x coordinates
+    upper_x = [initial_x, final_x].max
+    lower_x = [initial_x, final_x].min
+
+    # determine the direction of iterating through x coordinates
+    # each if x coordinate increases 
+    # reverse_each if x coordinate decreases
+    x_iterate = x_dir == :+ ? :each : :reverse_each
+
+    (lower_x+1...upper_x).send(x_iterate) do |x|
+      initial_y = initial_y.send(y_dir, 1)
+      
+      return true if !self.pieces.where(x_coord: x, y_coord: initial_y).empty?
+    end
+
+    false
+  end
+#######################
+
 end
 
