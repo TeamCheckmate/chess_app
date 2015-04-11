@@ -4,5 +4,6 @@ Rails.application.routes.draw do
   get "welcome/about" => 'welcome#about'
   root to: 'welcome#index'
 
-  resources :games, :only => [:new, :create, :show]
+  resources :games, :only => [:new, :create, :show, :update]
+  resources :welcome, :only => [:index, :about]
 end
