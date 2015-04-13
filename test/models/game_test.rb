@@ -22,29 +22,85 @@ class GameTest < ActiveSupport::TestCase
 
 
   test "is_obstructed_vertical_true" do
-    game = FactoryGirl.create(:game)
-    game.pieces.destroy_all
+    game = create_pieceless_game
     
-    p1 = Piece.create(x_coord: 3, y_coord: 3, game: game)
+    p1 = create_piece([3,3], game)
     
-    assert_equal true, game.is_obstructed(initial_x: 3, initial_y: 1, final_x: 3, final_y: 6)
+    assert_equal true, game.is_obstructed([3,1], [3,6])
   end
 
   test "is_obstructed_vertical_false" do
-    game = FactoryGirl.create(:game)
-    game.pieces.destroy_all
+    game = create_pieceless_game
     
-    p1 = Piece.create(x_coord: 0, y_coord: 0, game: game)
+    p1 = create_piece([0,0], game)
     
-    assert_equal false, game.is_obstructed(initial_x: 3, initial_y: 1, final_x: 3, final_y: 6)
+    assert_equal false, game.is_obstructed([3,1], [3,6])
   end
 
   test "is_obstructed_vertical_same_coord_error" do
-    game = FactoryGirl.create(:game)
+    game = create_pieceless_game
     
     assert RuntimeError do
-     game.is_obstructed(initial_x: 3, initial_y: 1, final_x: 3, final_y: 1)
+     game.is_obstructed([3,1], [3,1])
     end
   end
 
+  test "is_obstructed_horizontal_true" do
+    game = create_pieceless_game
+    p1 = create_piece([2,3], game)
+    assert_equal true, game.is_obstructed([1,3], [4,3])
+  end 
+
+  test "is_obstructed_horizontal_false" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game)
+    assert_equal false, game.is_obstructed([1,3], [4,3])
+  end   
+
+  test "is_obstructed_horizontal_error" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game)
+    
+    assert RuntimeError do
+     game.is_obstructed([3,3], [3,3])
+    end
+  end 
+
+  test "is_obstructed_diagonal_true_x_y_increase" do
+    game = create_pieceless_game
+    
+    p1 = create_piece([3,3], game)
+    assert_equal true, game.is_obstructed([1,1], [4,4])
+  end 
+
+  test "is_obstructed_diagonal_true_x_increase_y_decrease" do
+    game = create_pieceless_game
+    
+    p1 = create_piece([3,4], game)
+    assert_equal true, game.is_obstructed([2,5], [4,3])
+  end   
+
+  test "is_obstructed_diagonal_true_x_decrease_y_increase" do
+    game = create_pieceless_game
+    
+    p1 = create_piece([5,2], game)
+    assert_equal true, game.is_obstructed([6,1], [3,4])
+  end 
+
+  test "is_obstructed_diagonal_true_x_decrease_y_decrease" do
+    game = create_pieceless_game
+    
+    p1 = create_piece([3,4], game)
+    assert_equal true, game.is_obstructed([5,6], [1,2])
+  end
+
+  test "is_obstructed_random_input_error" do
+    game = create_pieceless_game
+    
+    p1 = create_piece([0,0], game)
+    
+    assert RuntimeError do
+     game.is_obstructed([3,3], [6,7])
+    end
+  end
 end
