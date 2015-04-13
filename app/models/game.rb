@@ -81,16 +81,11 @@ class Game < ActiveRecord::Base
     lower = [initial, final].min
 
     if dir == :vertical               # direction is vertical
-      pieces = self.pieces.where(x_coord: dir_coord)
-      dir = :y_coord
+      self.pieces.where(x_coord: dir_coord).where("y_coord >= ? AND y_coord <= ?", lower, upper).present?
     else                              # direction is horizontal
-      pieces = self.pieces.where(y_coord: dir_coord)
-      dir = :x_coord
+      self.pieces.where(y_coord: dir_coord).where("x_coord >= ? AND x_coord <= ?", lower, upper).present?
     end
 
-    pieces.each {|piece| return true if piece.send(dir).between?(lower,upper)}
-    
-    false
   end
 
   # This method checks the diagonal direction.
