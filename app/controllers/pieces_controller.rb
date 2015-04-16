@@ -2,6 +2,7 @@ class PiecesController < ApplicationController
   before_action :authenticate_user!
   protect_from_forgery
   skip_before_filter  :verify_authenticity_token
+  
   def show
     @piece = Piece.find(params[:id])
     @game = @piece.game_id
