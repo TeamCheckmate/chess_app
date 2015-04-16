@@ -4,6 +4,7 @@ class Game < ActiveRecord::Base
   has_many   :pieces
   after_create :populate_the_pieces!
 
+  delegate :pawns, :rooks, :knights, :bishops, :kings, :queens, to: :pieces
   
   INITIAL_PIECE_LOCATIONS = [
 
