@@ -50,17 +50,4 @@ class Game < ActiveRecord::Base
       end
   end
 
-  # def initialize
-  #   @board=Array.new(7){Array.new(7)}
-  # end
-
-  # def populate_new_board
-  #   (0..7).each do |row|
-  #     (0..7).each do |cell|
-  #       @board[row][cell]='pawn'
-  #     end
-  #   end
-  #   @board
-  # end
-
 end

@@ -13,6 +13,15 @@ class GamesController < ApplicationController
 		@pieces = @game.pieces
 	end
 
+	def select
+		@game = Game.find(params[:id])
+    @pieces = @game.pieces
+    @piece = Piece.find(params[:piece_id])
+    @piece_id = params[:piece_id]
+    @x_coord = params[:x_coord]
+    @y_coord = params[:y_coord]
+	end
+
 	private
 
 	def game_params
