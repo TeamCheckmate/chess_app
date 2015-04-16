@@ -55,28 +55,31 @@ class Game < ActiveRecord::Base
 # raise exception if the input coordinates are not in vertical, horizontal or diagonal direciton.
 # intial_coord and final_coord accept an array with a length of 2, [x_coordinate, y_coordinate]
   def is_obstructed(initial_coord, final_coord)
-    initial_x = initial_coord[0]
-    initial_y = initial_coord[1]
-    final_x = final_coord[0]
-    final_y = final_coord[1]
+    initial_x = initial_coord[0]  # initial x coordinate
+    initial_y = initial_coord[1]  # initial y coordinate
+    final_x = final_coord[0]      # x coordinate that the piece will be dropped
+    final_y = final_coord[1]      # y coordinate that the piece will be dropped
 
-    if initial_x == final_x    
+    # only 3 directions are valid
+    # vertical, horizontal and diagonal
+    if initial_x == final_x             
       vertical_horizontal(:vertical, initial_x, initial_y, final_y)
     elsif initial_y == final_y 
-      vertical_horizontal(:horizontal, initial_y, initial_x, final_y)
-    else    
+      vertical_horizontal(:horizontal, initial_y, initial_x, final_x)
+    else                          
       diagonal(initial_x, initial_y, final_x, final_y)
     end
   end
    
 ### helper methods
-  # This method checks both conditions, vertical and horizontal. 
+  # This method checks both conditions, vertical and horizontal depending on the argument, direction.
   # dir takes either :vertical or :horizontal, which indicates whether the direction is vertical or horizontal.
-  # dir_coord is either coordinate of the column or row that is the same for initial and final.
+  # dir_coord is either the coordinate of the column or row that is fixed. 
   def vertical_horizontal(dir, dir_coord, initial, final)
     # check if input is valid
     raise "Not Allowed" if initial == final
 
+    # Determine whether initial or final is bigger and smaller
     upper = [initial, final].max
     lower = [initial, final].min
 
@@ -98,27 +101,39 @@ class Game < ActiveRecord::Base
 
     raise "Not Allowed" if x != y       #raise an exception if it's not diagonal 
 
-    # determine x and y coordinate directions
+    # determine x and y coordinates are increasing or decreasing
     x_dir = x_y_dir(initial_x, final_x)
     y_dir = x_y_dir(initial_y, final_y)
     
-    # iterate through the diagonal based on x and y direction
+    # iterate through the diagonal 
     iterate_diagonal(x_dir, y_dir, initial_x, initial_y, final_x, final_y)
   end
 
-### helper methods for diagonal method
+### helper methods for diagonal metho
+  # return :+ (increasing) if the final coordinate is bigger than initial coordinate
+  # else return :- (decreasing)
   def x_y_dir(initial, final)
     final > initial ? :+ : :-
   end
 
+
+
   def iterate_diagonal(x_dir, y_dir, initial_x, initial_y, final_x, final_y)
-    # determine the upper and lower bound for x coordinates
+    # There are four possible cases we need to consider: 
+    # 1. x coordinate increases, y coordinate increases(x_dir: :+, y_dir: :+)
+    # 2. x coordinate increases, y coordinate decreases(x_dir: :+, y_dir: :-)
+    # 3. x coordinate decreases, y coordinate increases(x_dir: :-, y_dir: :+)
+    # 4. x coordinate decreases, y coordinate decreases(x_dir: :-, y_dir: :-)
+
+    # determine whether the initial x coordinate or final x coordinate is bigger
+    # the bigger one should be the upper bound
+    # the smaller one should be the lower bound
     upper_x = [initial_x, final_x].max
     lower_x = [initial_x, final_x].min
 
     # determine the direction of iterating through x coordinates
-    # each if x coordinate increases 
-    # reverse_each if x coordinate decreases
+    # each if x coordinate increases (iterating through from lower bound to upper bound)
+    # reverse_each if x coordinate decreases (iterating through from upper bound to lower bound)
     x_iterate = x_dir == :+ ? :each : :reverse_each
 
     (lower_x+1...upper_x).send(x_iterate) do |x|
