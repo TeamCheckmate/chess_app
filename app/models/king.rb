@@ -8,15 +8,15 @@ class King < Piece
 
 	private 
 	def valid_vertical_move?(new_x, new_y)
-		y_within_one(new_y) if same_x?(new_x)
+		y_within_one?(new_y) if same_x?(new_x)
 	end
 
 	def valid_horizontal_move?(new_x, new_y)
-		x_within_one(new_x) if same_y?(new_y)
+		x_within_one?(new_x) if same_y?(new_y)
 	end
 
 	def valid_diagonal_move?(new_x, new_y)
-		x_within_one(new_x) && y_within_one(new_y) 
+		x_within_one?(new_x) && y_within_one?(new_y) 
 	end	
 
 	def same_x?(new_x)

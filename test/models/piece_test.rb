@@ -9,26 +9,21 @@ class PieceTest < ActiveSupport::TestCase
 	# valid moves, king moves one square in any direction
 	[:+,:-].each do |operation|
 		# vertically 
-		destination = [king.x_coord.send(operation,1),king.y_coord]
-		assert_equal true, king.move_valid?(destination)
+		assert_equal true, king.move_valid?(king.x_coord.send(operation,1),king.y_coord)
 
 		# horizontally 
-		destination = [king.x_coord, king.y_coord.send(operation,1)]
-		assert_equal true, king.move_valid?(destination)
+		assert_equal true, king.move_valid?(king.x_coord, king.y_coord.send(operation,1))
 
 		# diagonally 
 		[:+,:-].each do |operation_2|
-			destination = [king.x_coord.send(operation, 1), king.y_coord.send(operation_2, 1)]
-			assert_equal true, king.move_valid?(destination)
+			assert_equal true, king.move_valid?(king.x_coord.send(operation, 1), king.y_coord.send(operation_2, 1))
 		end
 	end
 
 	# invalid move
-	destination = [5,6]
-	assert_equal false, king.move_valid?(destination)
+	assert_equal false, king.move_valid?(5,6)
 
 	# destination same as original coordinate
-	destination = [2,2]
-	assert_equal false, king.move_valid?(destination)
+	assert_equal false, king.move_valid?(2,2)
   end
 end
