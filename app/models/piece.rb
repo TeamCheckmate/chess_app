@@ -14,6 +14,12 @@ class Piece < ActiveRecord::Base
   scope :kings,   -> { where(piece_type: 'King') }
   scope :queens,  -> { where(piece_type: 'Queen') }
  
+  def set_destn(destn)    # destn means destinaton, [x, y]
+	destn_x = destn[0]
+	destn_y = destn[1]
+
+	return  destn_x, destn_y
+  end
 end
 
 
