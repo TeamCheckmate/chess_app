@@ -50,7 +50,6 @@ class Game < ActiveRecord::Base
         self.pieces.create(piece)
       end
   end
-
 ########################
 # is_obstructed returns true if there are pieces between two coordinates
 # raise exception if the input coordinates are not in vertical, horizontal or diagonal direciton.
