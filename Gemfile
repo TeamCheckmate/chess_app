@@ -52,3 +52,7 @@ end
 
 gem 'devise', '>= 3.2.4'
 
+gem 'omniauth-facebook'
+
+gem 'figaro', '>= 1.0.0'
+
