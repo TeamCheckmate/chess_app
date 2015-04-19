@@ -1,0 +1,13 @@
+<div id="board_outline">
+  <div id="chess_board">
+      <% (0..7).reverse_each do |y| %>
+      <% (0..7).reverse_each do |x| %>
+       <% if chess_piece(x,y).nil? %>
+        <div></div>
+        <% else %>
+        <div><%= image_tag(chess_piece(x, y).image_name) %></div>
+       <% end %>
+       <% end %>
+       <% end %>
+  </div>
+</div>
