@@ -1,41 +1,47 @@
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 <div id="board_outline">
-  <div id="chess_board">
+  <table id="chess_board" cellpadding="0" cellspacing="0" >
       <% (0..7).reverse_each do |y| %>
-      <% (0..7).reverse_each do |x| %>
-       <% if chess_piece(x,y).nil? %>
-       <div class="square" data-x-coord=<%= x %> data-y-coord=<%= y %>></div>
-        <% else %>
-        <div data-x-coord=<%= x %> data-y-coord=<%= y %>>
-          <div class="pieces" data-update-url="<%= piece_path chess_piece(x,y) %>"><%= image_tag(chess_piece(x, y).image_name) %></div>
-        </div>
-       <% end %>
-       <% end %>
-       <% end %>
+        <tr>
+        <% (0..7).reverse_each do |x| %>
+          <% if chess_piece(x,y).nil? %>
+            <td class="square" data-x-coord=<%= x %> data-y-coord=<%= y %>></td>
+          <% else %>
+            <td class="square" data-x-coord=<%= x %> data-y-coord=<%= y %>>
+            <div class="pieces" data-update-url="<%= piece_path chess_piece(x,y) %>"><%= image_tag(chess_piece(x, y).image_name) %></div>
+            </td>
+          <% end %>
+
+        <% end %>
+        </tr>
+      <% end %>
   </div>
 </div>
 
   <script>
   $ (function() {
-    $( ".pieces" ).draggable();
+    $( ".pieces" ).draggable({
+       containment: '#chess_board',
+       cursor: 'move',
+     });
+     
      $( ".square" ).droppable({
       drop: handleDropEvent
     });
   });
 
   function handleDropEvent( event, ui ) {
-  var x = $(event.target).data("x-coord");
-  var y = $(event.target).data("y-coord");
-  var draggable = ui.draggable;
-  alert( draggable.data('update-url') );
-   $.ajax({
+    var x = $(event.target).data("x-coord");
+    var y = $(event.target).data("y-coord");
+    var draggable = ui.draggable;
+    $(this).append(draggable.css('position','static'))
+    $.ajax({
           type: 'PUT',
           url: draggable.data('update-url'),
           dataType: 'json',
-          data: { piece: {x_coord: x, 
-            y_coord: y} }
+          data: { piece: {x_coord: x, y_coord: y} }
         });
-      }
+  }
    
   </script> 
