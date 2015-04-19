@@ -3,6 +3,8 @@ class Piece < ActiveRecord::Base
   belongs_to :user
   self.inheritance_column = :piece_type
 
+  validate :x_coord, :y_coord, presence: true
+
   def self.piece_types
     %w(Pawn Rook Bishop Knight Queen King)
   end
@@ -14,6 +16,7 @@ class Piece < ActiveRecord::Base
   scope :kings,   -> { where(piece_type: 'King') }
   scope :queens,  -> { where(piece_type: 'Queen') }
  
+  
 end
 
 
