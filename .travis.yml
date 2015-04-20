@@ -12,6 +12,13 @@ env:
 rvm:
   - 2.0.0
 
+deploy:
+  provider: heroku
+  api_key: Figaro.env.heroku_api_key
+  run: 
+    - "rake db:migrate"
+    - restart
+
 
 
 
