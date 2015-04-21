@@ -1,24 +1,19 @@
 language: ruby
 sudo: false
-script: "bundle exec rake"
-
+script: bundle exec rake
 before_script:
 - psql -c 'create database travis_ci_test;' -U postgres
-
-
 env:
-  - DATABASE_ADAPTER=postgresql
-
+- DATABASE_ADAPTER=postgresql
 rvm:
-  - 2.0.0
-
+- 2.0.0
 deploy:
   provider: heroku
-  api_key: Figaro.env.heroku_api_key
+  api_key:
+    secure: ewRcYcJNcfz4mYpMVOQXiHE2/BGAZ+sb0OsaDNerNGUAJ+zkfvBoAIk6c+G0VxPEjy/k8asacBZN4SNBwwz5d8ibuXd7WM4UAujZXI77X06sXyvgnjxLASCq+PCaU5rrfWRMmzgolxsWLEog7fvrm6Td17OrLfTkeIkK9hIyw88=
+  app: chess-app
+  on:
+    repo: TeamCheckmate/chess_app
   run: 
     - "rake db:migrate"
     - restart
-
-
-
-
