@@ -11,12 +11,12 @@ class PiecesController < ApplicationController
   def update
     @game = @piece.game_id
 
-    if @piece.move_valid?(new_x, new_y)
+    # if @piece.move_valid?(new_x, new_y)
       @piece.update_attributes(piece_params) 
       render :nothing => true
-    else
-      redirect_to game_path(@game)
-    end
+    # else
+    #   redirect_to game_path(@game)
+    # end
   end
 
   def destroy
