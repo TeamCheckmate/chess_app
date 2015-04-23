@@ -9,7 +9,7 @@
             <td class="square" data-x-coord=<%= x %> data-y-coord=<%= y %>></td>
           <% else %>
             <td class="square" data-x-coord=<%= x %> data-y-coord=<%= y %>>
-            <div class="pieces" data-update-url="<%= piece_path chess_piece(x,y) %>"><%= image_tag(chess_piece(x, y).image_name) %></div>
+            <div class="pieces" data-update-url="<%= piece_path chess_piece(x,y) %>" data-piece-id="<%= chess_piece(x, y).id %>"><%= image_tag(chess_piece(x, y).image_name) %></div>
             </td>
           <% end %>
 
@@ -35,12 +35,15 @@
     var x = $(event.target).data("x-coord");
     var y = $(event.target).data("y-coord");
     var draggable = ui.draggable;
+    var piece_id = draggable.data("piece-id");
+
     $(this).append(draggable.css('position','static'))
+
     $.ajax({
           type: 'PUT',
           url: draggable.data('update-url'),
           dataType: 'json',
-          data: { piece: {x_coord: x, y_coord: y} }
+          data: { piece: {x_coord: x, y_coord: y}}
         });
   }
    

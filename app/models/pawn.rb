@@ -1,6 +1,7 @@
 class Pawn < Piece 
-  def move_valid?(new_x, new_y) 
-    # king moves one square in any direction
+  def move_valid?(new_x, new_y)
+    return false if self.game.is_obstructed?([x_coord, y_coord], [new_x,new_y])
+
     valid_vertical_move?(new_y)   || 
     valid_start_move?(new_y, new_x) ||
     valid_diagonal_move?(new_x, new_y)  

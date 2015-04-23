@@ -22,5 +22,15 @@ class PiecesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "destroy_piece" do
+    user = FactoryGirl.create(:user)
+    game = FactoryGirl.create(:game)
+    sign_in user
+
+  
+    post :destroy, {:id => game.pieces.last.id}
+    assert_equal 31, game.pieces.count
+
+  end
 
 end

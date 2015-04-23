@@ -4,7 +4,7 @@ class KnightTest < ActiveSupport::TestCase
 
   test "knight_move_valid" do
   game = create_pieceless_game
-  knight = game.pieces.new(x_coord: 2, y_coord: 2, piece_type: "Knight")
+  knight = game.pieces.create(x_coord: 2, y_coord: 2, piece_type: "Knight")
 
   # valid moves, king moves one square in any direction
   [:+,:-].each do |operation|

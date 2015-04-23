@@ -5,7 +5,7 @@ class Knight < Piece
     valid_vertical_move?(new_x, new_y)   || 
     valid_horizontal_move?(new_x, new_y)
   end
-
+  
   private
 
   def valid_vertical_move?(new_x, new_y)

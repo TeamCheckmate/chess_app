@@ -55,10 +55,24 @@ class Game < ActiveRecord::Base
 # raise exception if the input coordinates are not in vertical, horizontal or diagonal direciton.
 # intial_coord and destn_coord accept an array with a length of 2, [x_coordinate, y_coordinate]
   def is_obstructed?(start_coord, destn_coord)
-    start_x = start_coord[0]  # start x coordinate
-    start_y = start_coord[1]  # start y coordinate
+    start_x = start_coord[0]      # start x coordinate
+    start_y = start_coord[1]      # start y coordinate
     destn_x = destn_coord[0]      # x coordinate that the piece will be dropped
     destn_y = destn_coord[1]      # y coordinate that the piece will be dropped
+
+    start_piece= self.pieces.where(x_coord: start_x, y_coord: start_y).first
+    destn_piece = self.pieces.where(x_coord: destn_x, y_coord: destn_y).first
+
+    
+    if start_piece.piece_type == "Pawn" && start_piece.color == "white" 
+      return true if !piece_in_front?(start_x, start_y, 1) 
+    elsif  start_piece.piece_type == "Pawn" && start_piece.color == "black" 
+      return true if !piece_in_front?(start_x, start_y, -1) 
+    end
+
+    if !destn_piece.nil? && destn_piece.color == start_piece.color 
+      return true
+    end
 
     # only 3 directions are valid
     # vertical, horizontal and diagonal
@@ -70,14 +84,18 @@ class Game < ActiveRecord::Base
       diagonal(start_x, start_y, destn_x, destn_y)
     end
   end
-   
-### helper methods
+
+  private
+  def piece_in_front?(x_coord, y_coord, operater)
+    self.pieces.where(x_coord: x_coord, y_coord: y_coord+operater).empty?
+  end
+  
   # This method checks both conditions, vertical and horizontal depending on the argument, direction.
   # dir takes either :vertical or :horizontal, which indicates whether the direction is vertical or horizontal.
   # dir_coord is either the coordinate of the column or row that is fixed. 
   def vertical_horizontal(dir, dir_coord, start, destn)
     # check if input is valid
-    raise "Not Allowed" if start == destn
+    # raise "Not Allowed" if start == destn
 
     # Determine whether start or destn is bigger and smaller
     upper = [start, destn].max
@@ -99,7 +117,7 @@ class Game < ActiveRecord::Base
     x = (start_x - destn_x).abs
     y = (start_y - destn_y).abs
 
-    raise "Not Allowed" if x != y       #raise an exception if it's not diagonal 
+    # raise "Not Allowed" if x != y       #raise an exception if it's not diagonal 
 
     # determine x and y coordinates are increasing or decreasing
     x_dir = x_y_dir(start_x, destn_x)
@@ -116,10 +134,7 @@ class Game < ActiveRecord::Base
     destn > start ? :+ : :-
   end
 
-
-
-  def iterate_diagonal(x_dir, y_dir, start_x, start_y, destn_x, destn_y)
-    # There are four possible cases we need to consider: 
+   # There are four possible cases we need to consider: 
     # 1. x coordinate increases, y coordinate increases(x_dir: :+, y_dir: :+)
     # 2. x coordinate increases, y coordinate decreases(x_dir: :+, y_dir: :-)
     # 3. x coordinate decreases, y coordinate increases(x_dir: :-, y_dir: :+)
@@ -128,6 +143,7 @@ class Game < ActiveRecord::Base
     # determine whether the start x coordinate or destn x coordinate is bigger
     # the bigger one should be the upper bound
     # the smaller one should be the lower bound
+  def iterate_diagonal(x_dir, y_dir, start_x, start_y, destn_x, destn_y) 
     upper_x = [start_x, destn_x].max
     lower_x = [start_x, destn_x].min
 

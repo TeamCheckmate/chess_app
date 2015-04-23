@@ -36,4 +36,6 @@ class GamesControllerTest < ActionController::TestCase
     assert_redirected_to game_path
   end
 
+  
+
 end
