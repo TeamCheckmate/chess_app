@@ -23,7 +23,7 @@ en:
         subject: "Reset password instructions"
       unlock_instructions:
         subject: "Unlock instructions"
-    omniauth_callbacks:
+    callbacks:
       failure: "Could not authenticate you from %{kind} because \"%{reason}\"."
       success: "Successfully authenticated from %{kind} account."
     passwords:
