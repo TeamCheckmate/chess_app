@@ -1,5 +1,7 @@
 class GamesController < ApplicationController
 	before_action :authenticate_user!
+	protect_from_forgery
+  	skip_before_filter  :verify_authenticity_token
 	def new
 		@game = Game.new
 	end

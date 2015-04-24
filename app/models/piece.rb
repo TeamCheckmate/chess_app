@@ -15,8 +15,9 @@ class Piece < ActiveRecord::Base
   scope :knights, -> { where(piece_type: 'Knight') }
   scope :kings,   -> { where(piece_type: 'King') }
   scope :queens,  -> { where(piece_type: 'Queen') }
- 
-  
+
+  def move_valid?(new_x,new_y)
+  end  
 end
 
 

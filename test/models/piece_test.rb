@@ -4,7 +4,7 @@ class PieceTest < ActiveSupport::TestCase
 
   test "king_move_valid" do
 	game = create_pieceless_game
-	king = game.pieces.new(x_coord: 2, y_coord: 2, piece_type: "King")
+	king = game.pieces.create(x_coord: 2, y_coord: 2, piece_type: "King")
 
 	# valid moves, king moves one square in any direction
 	[:+,:-].each do |operation|
@@ -29,7 +29,7 @@ class PieceTest < ActiveSupport::TestCase
 
   test "queen_move_valid" do
     game = create_pieceless_game
-    queen = game.pieces.new(x_coord: 4, y_coord: 4, piece_type: "Queen")
+    queen = game.pieces.create(x_coord: 4, y_coord: 4, piece_type: "Queen")
 
     [:+,:-].each do |operation|
       # horizontal
@@ -53,7 +53,7 @@ class PieceTest < ActiveSupport::TestCase
 
   test "rook_move_valid" do
     game = create_pieceless_game
-    rook = game.pieces.new(x_coord: 4, y_coord: 4, piece_type: "Rook")
+    rook = game.pieces.create(x_coord: 4, y_coord: 4, piece_type: "Rook")
 
     [:+,:-].each do |operation|
       # horizontal
@@ -77,7 +77,7 @@ class PieceTest < ActiveSupport::TestCase
  
   test "bishop_move_valid" do
     game = create_pieceless_game
-    bishop = game.pieces.new(x_coord: 4, y_coord: 4, piece_type: "Bishop")
+    bishop = game.pieces.create(x_coord: 4, y_coord: 4, piece_type: "Bishop")
 
     [:+,:-].each do |operation|
       # horizontal

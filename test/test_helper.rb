@@ -27,7 +27,7 @@ def create_pieceless_game
 end
 
 # This method can create a piece by simply inputing a desired coordinate [x,y] and a game 
-def create_piece(coord, game)
-  piece = Piece.create!(x_coord: coord[0], y_coord: coord[1], game: game)
+def create_piece(coord, game, type=nil, color=nil)
+  piece = Piece.create!(x_coord: coord[0], y_coord: coord[1], piece_type: type, game: game, color: color)
   piece 
 end

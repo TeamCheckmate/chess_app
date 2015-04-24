@@ -5,4 +5,8 @@ module GamesHelper
     # image_tag piece.image_name
     return piece
   end
+
+  def find_piece(piece_id)
+  	piece = @pieces.where(id: piece_id).first
+  end
 end
