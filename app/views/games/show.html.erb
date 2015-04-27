@@ -42,6 +42,9 @@
     $.ajax({
           type: 'PUT', 
           statusCode: {
+            205: function() {
+              location.reload();
+            },
             422: function() {
               location.reload();          
             }
