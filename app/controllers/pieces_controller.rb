@@ -12,11 +12,14 @@ class PiecesController < ApplicationController
     @game_id = @piece.game_id
 
     if @piece.move_valid?(new_x, new_y)
-      @piece.update_attributes(piece_params) 
-      # @piece.move_to
-      render :nothing => true
+       if @piece.move_to!(new_x, new_y).nil?
+        @piece.update_attributes(piece_params)
+        render :nothing => true
+      else
+        @piece.update_attributes(piece_params)
+        render :json => {:message => "piece taken"}, :status => :reset_content
+      end
     else
-      # redirect_to game_path(@game_id)
       render :json => {:message => "Invalid move"}, :status => :unprocessable_entity
     end
   end

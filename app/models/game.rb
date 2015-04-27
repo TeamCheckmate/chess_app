@@ -85,6 +85,9 @@ class Game < ActiveRecord::Base
     end
   end
 
+  def square_occupied(x_coord, y_coord)
+    self.pieces.where(x_coord: x_coord, y_coord: y_coord)
+  end
   private
   def piece_in_front?(x_coord, y_coord, operater)
     self.pieces.where(x_coord: x_coord, y_coord: y_coord+operater).empty?

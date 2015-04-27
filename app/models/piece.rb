@@ -18,6 +18,16 @@ class Piece < ActiveRecord::Base
 
   def move_valid?(new_x,new_y)
   end  
+
+  def move_to!(new_x, new_y)
+    destn_piece = self.game.square_occupied(new_x, new_y) 
+    if destn_piece.empty?
+      return destn_piece.first
+    else 
+      destn_piece.first.update(:x_coord => nil, :y_coord => nil)
+      return destn_piece.first
+    end
+  end
 end
 
 

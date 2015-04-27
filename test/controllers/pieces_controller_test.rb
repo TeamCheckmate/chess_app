@@ -47,4 +47,16 @@ class PiecesControllerTest < ActionController::TestCase
     assert response["message"].present?
   end
 
+  test "capture_method" do
+    user = FactoryGirl.create(:user)
+    sign_in user
+
+    game = create_pieceless_game
+    piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Rook', :color => "white")
+    piece2 = game.pieces.create(:x_coord => 3, :y_coord => 1, :piece_type => 'Pawn', :color => "black")
+    put :update, :id => piece.id, :piece => {:x_coord => 3, :y_coord => 1}
+    assert_response :success
+    assert_equal nil, piece2.reload.x_coord
+  end
+
 end
