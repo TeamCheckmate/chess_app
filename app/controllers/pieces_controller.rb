@@ -10,14 +10,16 @@ class PiecesController < ApplicationController
 
   def update
     @game_id = @piece.game_id
+    @game = Game.where(id: @game_id).first
 
     if @piece.move_valid?(new_x, new_y)
-       if @piece.move_to!(new_x, new_y).nil?
-        @piece.update_attributes(piece_params)
+      status_code = @piece.move_to!(new_x, new_y)
+       if status_code == :valid_move
         render :nothing => true
-      else
-        @piece.update_attributes(piece_params)
+      elsif status_code == :reload
         render :json => {:message => "piece taken"}, :status => :reset_content
+      else
+        render :json => {:message => "Invalid move"}, :status => :unprocessable_entity        
       end
     else
       render :json => {:message => "Invalid move"}, :status => :unprocessable_entity

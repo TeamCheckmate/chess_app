@@ -124,5 +124,21 @@ class GameTest < ActiveSupport::TestCase
     assert_equal false, game.is_obstructed?([3,3], [6,6]) 
   end
 
+  test "in_check" do
+    game = create_pieceless_game
+    p1 = create_piece([3,3], game, "King", "white")
+    p2 = create_piece([6,6], game, "Queen", "black")
+
+    assert_equal true, game.in_check?("white")
+  end
+
+  test "not_in_check" do
+    game = create_pieceless_game
+    p1 = create_piece([3,3], game, "King", "white")
+    p2 = create_piece([7,6], game, "Queen", "black")
+
+    assert_equal false, game.in_check?("white")
+  end
+
 
 end
