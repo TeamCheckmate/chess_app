@@ -16,7 +16,7 @@ class PawnTest < ActiveSupport::TestCase
     assert_equal true, pawn.move_valid?(pawn.x_coord,pawn.y_coord.send(operation,2))
 
     # diagonally
-    assert_equal true, pawn.move_valid?(pawn.x_coord.send(operation,1),pawn.y_coord.send(operation,1))
+    assert_equal false, pawn.move_valid?(pawn.x_coord.send(operation,1),pawn.y_coord.send(operation,1))
 
   # invalid move
   assert_equal false, pawn.move_valid?(4,4)
@@ -39,7 +39,7 @@ class PawnTest < ActiveSupport::TestCase
       assert_equal true, pawn.move_valid?(pawn.x_coord,pawn.y_coord.send(operation,2))
 
       # diagonally
-      assert_equal true, pawn.move_valid?(pawn.x_coord.send(operation,1),pawn.y_coord.send(operation,1))
+      assert_equal false, pawn.move_valid?(pawn.x_coord.send(operation,1),pawn.y_coord.send(operation,1))
 
     # invalid move
     assert_equal false, pawn.move_valid?(4,4)
@@ -58,4 +58,14 @@ class PawnTest < ActiveSupport::TestCase
     assert_equal true, game.is_obstructed?([1,1], [1,3]) 
 
   end
+
+  test "pawn diagonal" do
+    game = create_pieceless_game
+
+    p_w = Piece.create!(x_coord: 1, y_coord: 1, color: "white", piece_type: "Pawn", game: game)
+    p_b = Piece.create!(x_coord: 0, y_coord: 2, color: "black", piece_type: "Pawn", game: game)
+
+    assert_equal true, p_w.move_valid?(0,2)
+  end
+
 end
