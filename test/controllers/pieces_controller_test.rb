@@ -85,4 +85,15 @@ class PiecesControllerTest < ActionController::TestCase
     assert_equal nil, piece2.reload.x_coord
   end
 
+  test "pawn promote" do
+    user = FactoryGirl.create(:user)
+    sign_in user
+
+    game = create_pieceless_game
+    piece = game.pieces.create(:x_coord => 0, :y_coord => 6, :piece_type => 'Pawn', :color => "white")
+    piece2 = game.pieces.create(:x_coord => 7, :y_coord => 7, :piece_type => 'King', :color => "white")
+    put :update, :id => piece.id, :piece => {:x_coord => 0, :y_coord => 7}
+    assert_response :partial_content
+  end
+
 end

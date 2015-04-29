@@ -1,0 +1,8 @@
+ <div id="modal-edit-fields">
+ <%= form_for ([@game, @piece]) do |f| %>
+      <%= f.input :piece_type, :collection => Piece::New_Pieces, :label => 'Please select a new piece' %>
+      <div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+    <%= f.submit "Update Piece", :class => 'btn-xs btn-primary' %>
+  <% end %>
+</div>
