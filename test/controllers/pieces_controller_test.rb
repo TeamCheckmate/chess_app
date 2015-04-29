@@ -18,7 +18,8 @@ class PiecesControllerTest < ActionController::TestCase
     sign_in user
 
     game = create_pieceless_game
-    piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Rook')
+    piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Rook', :color => "white")
+    piece2 = game.pieces.create(:x_coord => 3, :y_coord => 3, :piece_type => 'King', :color => "white")
     put :update, id: piece.id, :piece => {x_coord: 3, y_coord: 1}
     assert_response :success
   end
@@ -54,9 +55,21 @@ class PiecesControllerTest < ActionController::TestCase
     game = create_pieceless_game
     piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Rook', :color => "white")
     piece2 = game.pieces.create(:x_coord => 3, :y_coord => 1, :piece_type => 'Pawn', :color => "black")
+    piece3 = game.pieces.create(:x_coord => 6, :y_coord => 6, :piece_type => 'King', :color => "white")
     put :update, :id => piece.id, :piece => {:x_coord => 3, :y_coord => 1}
     assert_response :success
     assert_equal nil, piece2.reload.x_coord
+  end
+
+  test "block check" do
+    user = FactoryGirl.create(:user)
+    sign_in user
+    game = create_pieceless_game
+    p1 = create_piece([3,7], game, "King", "black")
+    p2 = create_piece([6,4], game, "Bishop", "white")
+    p3 = create_piece([5,6], game, "Pawn", "black")
+    p3.update_attributes(:y_coord => 5)
+    assert_equal false, game.in_check?("black")
   end
 
 end

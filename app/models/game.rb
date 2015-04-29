@@ -88,6 +88,26 @@ class Game < ActiveRecord::Base
   def square_occupied(x_coord, y_coord)
     self.pieces.where(x_coord: x_coord, y_coord: y_coord)
   end
+
+  def in_check?(color)
+    #look for king of a color, find the coordinates, query opposing teams' pieces and see if a valid move
+    #allows the king to be captured
+    check_king = self.pieces.where(piece_type: "King", color: color).first
+    king_x = check_king.x_coord
+    king_y = check_king.y_coord
+    if color == "white"
+      opp_color = "black"
+    else
+      opp_color = "white"
+    end
+    opp_pieces = self.pieces.where(color: opp_color)
+    opp_pieces.each do |p|
+      if p.x_coord != nil && p.move_valid?(king_x, king_y)
+        return true
+      end
+    end
+    return false
+  end
   private
   def piece_in_front?(x_coord, y_coord, operater)
     self.pieces.where(x_coord: x_coord, y_coord: y_coord+operater).empty?

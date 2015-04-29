@@ -1,6 +1,7 @@
 class Bishop < Piece 
   def move_valid?(new_x, new_y)
-    valid_diagonal_move?(new_x, new_y)
+    return false if self.game.is_obstructed?([x_coord, y_coord], [new_x,new_y])
+    valid_diagonal_move?(new_x, new_y) 
   end
 
   private
