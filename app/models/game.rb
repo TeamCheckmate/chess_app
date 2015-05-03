@@ -112,7 +112,27 @@ class Game < ActiveRecord::Base
     end
     return false
   end
+
+   def castle?(new_x, new_y, color)
+    #no pieces between rook and king
+    #rook and king must be in original positions
+    castle_king = self.pieces.where(:piece_type => "King", :color => color)
+    if new_x > 4 
+      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 7)
+    else
+      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 0)
+    end
+      if !castle_rook.present?
+        return false
+      elsif castle_king.moves.empty? && castle_rook.moves.empty?
+        return true
+      else
+        return false
+      end
+  end
+
   private
+  
   def piece_in_front?(x_coord, y_coord, operater)
     self.pieces.where(x_coord: x_coord, y_coord: y_coord+operater).empty?
   end
@@ -188,23 +208,7 @@ class Game < ActiveRecord::Base
     false
   end
 
-  def castle?(new_x, new_y, color)
-    #no pieces between rook and king
-    #rook and king must be in original positions
-    castle_king = self.pieces.where(:piece_type => "King", :color => color)
-    if new_x > 4 
-      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 7)
-    else
-      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 0)
-    end
-      if !castle_rook.present?
-        return false
-      elsif castle_king.moves.empty? && castle_rook.moves.empty?
-        return true
-      else
-        return false
-      end
-  end
+ 
 
 end
 
