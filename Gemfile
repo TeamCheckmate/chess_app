@@ -32,6 +32,11 @@ gem 'bootstrap-sass', '~> 3.3.4'
 
 gem 'autoprefixer-rails'
 
+group :development do
+   gem 'binding_of_caller'
+   gem 'better_errors'
+ end
+
 group :test do 
   gem "factory_girl_rails", "~> 4.0"
   gem 'database_cleaner'

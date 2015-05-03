@@ -49,8 +49,13 @@
               location.reload();          
             },
             206: function(){
-              location.reload();
-            }
+                alert("206");
+                $.ajax({
+                type: 'GET',
+                url: draggable.data('update-url') + "/" + "edit",
+                dataType: 'json', 
+              });
+              }
           },
           url: draggable.data('update-url'),
           dataType: 'json',
@@ -60,26 +65,3 @@
    
   </script> 
 
-     <!-- Button trigger modal -->
-  <button type="button" class="btn-xs btn-primary" data-toggle="modal" data-target="#myEditModal" data-remote="<%= edit_piece_path(chess_piece(:x_coord, :y_coord)) %> #modal-edit-fields">
-    Launch demo modal
-  </button>
-
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myModalLabel">Choose a Piece</h4>
-        </div>
-        <div class="modal-body">
-          <%= render "pieces/form" %>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>

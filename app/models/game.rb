@@ -2,6 +2,7 @@ class Game < ActiveRecord::Base
   belongs_to :white_player, class_name: "User"
   belongs_to :black_player, class_name: "User"
   has_many   :pieces
+  has_many :moves, through: :pieces
   after_create :populate_the_pieces!
 
   delegate :pawns, :rooks, :knights, :bishops, :kings, :queens, to: :pieces
@@ -50,6 +51,8 @@ class Game < ActiveRecord::Base
         self.pieces.create(piece)
       end
   end
+
+    
 ########################
 # is_obstructed? returns true if there are pieces between two coordinates
 # raise exception if the input coordinates are not in vertical, horizontal or diagonal direciton.
@@ -63,11 +66,12 @@ class Game < ActiveRecord::Base
     start_piece= self.pieces.where(x_coord: start_x, y_coord: start_y).first
     destn_piece = self.pieces.where(x_coord: destn_x, y_coord: destn_y).first
 
-    
-    if start_piece.piece_type == "Pawn" && start_piece.color == "white" 
-      return true if !piece_in_front?(start_x, start_y, 1) 
-    elsif  start_piece.piece_type == "Pawn" && start_piece.color == "black" 
-      return true if !piece_in_front?(start_x, start_y, -1) 
+    if start_x - destn_x == 0
+      if start_piece.piece_type == "Pawn" && start_piece.color == "white" 
+        return true if !piece_in_front?(start_x, start_y, 1) 
+      elsif  start_piece.piece_type == "Pawn" && start_piece.color == "black" 
+        return true if !piece_in_front?(start_x, start_y, -1) 
+      end
     end
 
     if !destn_piece.nil? && destn_piece.color == start_piece.color 
@@ -183,7 +187,24 @@ class Game < ActiveRecord::Base
 
     false
   end
-#######################
+
+  def castle?(new_x, new_y, color)
+    #no pieces between rook and king
+    #rook and king must be in original positions
+    castle_king = self.pieces.where(:piece_type => "King", :color => color)
+    if new_x > 4 
+      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 7)
+    else
+      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 0)
+    end
+      if !castle_rook.present?
+        return false
+      elsif castle_king.moves.empty? && castle_rook.moves.empty?
+        return true
+      else
+        return false
+      end
+  end
 
 end
 

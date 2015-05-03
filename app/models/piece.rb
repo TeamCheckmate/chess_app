@@ -1,9 +1,17 @@
 class Piece < ActiveRecord::Base
   belongs_to :game
   belongs_to :user
+  has_many :moves
   self.inheritance_column = :piece_type
+  after_update :create_move!
 
   validate :x_coord, :y_coord, presence: true
+
+  def create_move!
+  #need to find game associated with piece  
+    moved_piece = self.game.pieces.order("updated_at").last 
+    Move.create :game_id => moved_piece.game.id, :piece_id => moved_piece.id, :x_coord => moved_piece.x_coord, :y_coord => moved_piece.y_coord
+  end
 
   def self.piece_types
     %w(Pawn Rook Bishop Knight Queen King)
@@ -44,7 +52,7 @@ class Piece < ActiveRecord::Base
         self.update_attributes(:x_coord => old_x, :y_coord => old_y)
       return :invalid_move
     else
-       if self.piece_type == "Pawn" && self.y_coord == 0 || 7
+       if self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7
           return :pawn_promote
        elsif destn_piece.nil?
         return :valid_move
@@ -55,7 +63,7 @@ class Piece < ActiveRecord::Base
   end
 
   def pawn_promotion?
-    self.piece_type == "Pawn" && self.y_coord == 0 || 7
+    self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7
   end      
 
 

@@ -16,7 +16,7 @@ class PiecesController < ApplicationController
     @game_id = @piece.game_id
     @game = Game.where(id: @game_id).first
     if @piece.pawn_promotion?
-      @piece.update_attributes(piece_params[:piece_type])
+      @piece.update_attributes(piece_params)
       render :json => {:message => "new piece"}, :status => :reset_content
     elsif @piece.move_valid?(new_x, new_y)
       status_code = @piece.move_to!(new_x, new_y)
