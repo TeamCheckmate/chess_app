@@ -242,4 +242,19 @@ class GameTest < ActiveSupport::TestCase
     p4 = create_piece([2,2], game, "Knight", "black")
     assert_equal true, game.check_mate?
   end
+
+  test "bishop checkmate false" do 
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([3,7], game, "Queen", "black")
+    p3 = create_piece([4,7], game, "King", "black")
+    p4 = create_piece([4,6], game, "Pawn", "black")
+    p5 = create_piece([5,6], game, "Pawn", "black")
+    p6 = create_piece([5,7], game, "Rook", "black")
+    p7 = create_piece([0,5], game, "Bishop", "black")
+    p8 = create_piece([1,4], game, "Bishop", "white")
+    assert_equal false, game.check_mate?
+
+  end
+
 end

@@ -15,15 +15,11 @@ class PiecesController < ApplicationController
   def update
     @game_id = @piece.game_id
     @game = Game.where(id: @game_id).first
-    if @game.check_mate?
-      render :json => {:message => "check mate"}, :status => :no_content
-    end
-    if @piece.pawn_promotion?
-      @piece.update_attributes(piece_params)
-      render :json => {:message => "new piece"}, :status => :partial_content
-    elsif @piece.move_valid?(new_x, new_y)
+    if @piece.move_valid?(new_x, new_y)
       status_code = @piece.move_to!(new_x, new_y)
-       if status_code == :valid_move
+      if @game.check_mate?
+       render :json => {:message => "check mate"}, :status => :no_content
+      elsif status_code == :valid_move
         render :nothing => true
       elsif status_code == :reload
         render :json => {:message => "piece taken"}, :status => :reset_content

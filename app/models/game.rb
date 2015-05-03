@@ -191,7 +191,7 @@ class Game < ActiveRecord::Base
       defend_pieces = self.pieces.where(color: check_king.color)
       check_line.each do |square|
         defend_pieces.each do |piece|
-          if piece.piece_type != 'King' && piece.move_valid?(square[0], square[1])
+          if piece.x_coord != nil && piece.piece_type != 'King' && piece.move_valid?(square[0], square[1])
             old_x = piece.x_coord
             old_y = piece.y_coord
             piece.update_attributes(:x_coord => square[0], :y_coord => square[1])
