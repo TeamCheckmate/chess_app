@@ -166,44 +166,70 @@ class Game < ActiveRecord::Base
       end
 
       check_piece = find_check_piece(check_color, check_king)
-      upper_x = [check_piece.x_coord, check_king.x_coord].max
-      lower_x = [check_piece.x_coord, check_king.x_coord].min
-      upper_y = [check_piece.y_coord, check_king.y_coord].max
-      lower_y = [check_piece.y_coord, check_king.y_coord].min
-
-      check_line = []
-      if upper_x == lower_x
-        (lower_y..upper_y).each do |y|
-          check_line << [upper_x, y]
-        end
-      elsif upper_y == lower_y
-        (lower_x..upper_x).each do |x|
-          check_line << [x, upper_y] 
-        end
-      else
-        y = lower_y
-        (lower_x..upper_x).each do |x|
-          check_line << [x, y]
-          y += 1
-        end
-      end
 
       defend_pieces = self.pieces.where(color: check_king.color)
-      check_line.each do |square|
-        defend_pieces.each do |piece|
-          if piece.x_coord != nil && piece.piece_type != 'King' && piece.move_valid?(square[0], square[1])
-            old_x = piece.x_coord
-            old_y = piece.y_coord
-            piece.update_attributes(:x_coord => square[0], :y_coord => square[1])
-            if !in_check?(piece.color)
+
+      if check_piece.piece_type != "Knight"
+        upper_x = [check_piece.x_coord, check_king.x_coord].max
+        lower_x = [check_piece.x_coord, check_king.x_coord].min
+        upper_y = [check_piece.y_coord, check_king.y_coord].max
+        lower_y = [check_piece.y_coord, check_king.y_coord].min
+  
+        check_line = []
+        if upper_x == lower_x
+          (lower_y+1...upper_y).each do |y|
+            check_line << [upper_x, y]
+          end
+        elsif upper_y == lower_y
+          (lower_x+1...upper_x).each do |x|
+            check_line << [x, upper_y] 
+          end
+        else
+          y = lower_y+1
+          (lower_x+1...upper_x).each do |x|
+            check_line << [x, y]
+            y += 1
+          end
+        end
+  
+        check_line.each do |square|
+          defend_pieces.each do |piece|
+            if piece.x_coord != nil && piece.piece_type != 'King' && piece.move_valid?(square[0], square[1])
+              old_x = piece.x_coord
+              old_y = piece.y_coord
+              piece.update_attributes(:x_coord => square[0], :y_coord => square[1])
+              if !in_check?(piece.color)
+                piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
+                return false
+              end
               piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
-              return false
             end
-            piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
           end
         end
       end
+
+      # try and take the piece
+      attack_x = check_piece.x_coord
+      attack_y = check_piece.y_coord
+      defend_pieces.each do |piece|
+        if !piece.x_coord.nil? && piece.move_valid?(attack_x, attack_y)
+          old_x = piece.x_coord
+          old_y = piece.y_coord
+          check_piece.update_attributes(:x_coord => nil, :y_coord => nil)
+          piece.update_attributes(:x_coord => attack_x, :y_coord => attack_y)
+          if !in_check?(piece.color)
+            piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
+            check_piece.update_attributes(:x_coord => attack_x, :y_coord => attack_y)
+            return false
+          end
+          piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
+          check_piece.update_attributes(:x_coord => attack_x, :y_coord => attack_y)
+        end
+   
+      end
     end
+
+    
 
     true
   end
