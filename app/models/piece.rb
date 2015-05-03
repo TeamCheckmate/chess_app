@@ -55,7 +55,7 @@ class Piece < ActiveRecord::Base
   end
 
   def pawn_promotion?
-    self.piece_type == "Pawn" && self.y_coord == 0 || 7
+    self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7 
   end      
 
 

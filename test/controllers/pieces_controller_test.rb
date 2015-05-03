@@ -20,6 +20,7 @@ class PiecesControllerTest < ActionController::TestCase
     game = create_pieceless_game
     piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Rook', :color => "white")
     piece2 = game.pieces.create(:x_coord => 3, :y_coord => 3, :piece_type => 'King', :color => "white")
+    piece4 = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'King', :color => "black")
     put :update, id: piece.id, :piece => {x_coord: 3, y_coord: 1}
     assert_response :success
   end
@@ -41,8 +42,9 @@ class PiecesControllerTest < ActionController::TestCase
 
     game = create_pieceless_game
     piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Rook')
+    piece4 = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'King', :color => "black")
+    piece5 = game.pieces.create(:x_coord => 7, :y_coord => 7, :piece_type => 'King', :color => "white")
     put :update, id: piece.id, :piece => {x_coord: 3, y_coord: 2}
-
     assert_response :unprocessable_entity
     response = ActiveSupport::JSON.decode @response.body
     assert response["message"].present?
@@ -56,6 +58,7 @@ class PiecesControllerTest < ActionController::TestCase
     piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Rook', :color => "white")
     piece2 = game.pieces.create(:x_coord => 3, :y_coord => 1, :piece_type => 'Pawn', :color => "black")
     piece3 = game.pieces.create(:x_coord => 6, :y_coord => 6, :piece_type => 'King', :color => "white")
+    piece4 = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'King', :color => "black")
     put :update, :id => piece.id, :piece => {:x_coord => 3, :y_coord => 1}
     assert_response :success
     assert_equal nil, piece2.reload.x_coord
@@ -80,6 +83,7 @@ class PiecesControllerTest < ActionController::TestCase
     piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Pawn', :color => "white")
     piece2 = game.pieces.create(:x_coord => 0, :y_coord => 2, :piece_type => 'Pawn', :color => "black")
     piece3 = game.pieces.create(:x_coord => 7, :y_coord => 7, :piece_type => 'King', :color => "white")
+    piece4 = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'King', :color => "black")
     put :update, :id => piece.id, :piece => {:x_coord => 0, :y_coord => 2}
     assert_response :success
     assert_equal nil, piece2.reload.x_coord
@@ -92,6 +96,7 @@ class PiecesControllerTest < ActionController::TestCase
     game = create_pieceless_game
     piece = game.pieces.create(:x_coord => 0, :y_coord => 6, :piece_type => 'Pawn', :color => "white")
     piece2 = game.pieces.create(:x_coord => 7, :y_coord => 7, :piece_type => 'King', :color => "white")
+    piece4 = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'King', :color => "black")
     put :update, :id => piece.id, :piece => {:x_coord => 0, :y_coord => 7}
     assert_response :partial_content
   end
