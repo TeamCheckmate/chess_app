@@ -36,7 +36,8 @@
     var y = $(event.target).data("y-coord");
     var draggable = ui.draggable;
     var piece_id = draggable.data("piece-id");
-
+    window.piece_id = piece_id; //bad idea 
+    
     $(this).append(draggable.css('position','static'))
 
     $.ajax({
@@ -47,6 +48,12 @@
             },
             422: function() {
               location.reload();          
+            },
+            206: function(){
+              location.reload();
+            },
+            204: function() {
+              alert("Check Mate!");
             }
           },
           url: draggable.data('update-url'),
@@ -54,5 +61,36 @@
           data: { piece: {x_coord: x, y_coord: y}}
         });
   }
-   
+  
+  $(".promote").click(function() {
+    $.ajax({
+      type: "PUT",
+
+      // send piece_id 
+    })
+  });
   </script> 
+
+     <!-- Button trigger modal -->
+  <button type="button" class="btn-xs btn-primary" data-toggle="modal" data-target="#myEditModal" id="myEditModalButton">
+    Launch demo modal
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="myEditModalLabel">Choose a Piece</h4>
+        </div>
+        <div class="modal-body">
+          <%= render "pieces/form" %>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>

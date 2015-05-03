@@ -141,4 +141,120 @@ class GameTest < ActiveSupport::TestCase
   end
 
 
+  test "checkmate true" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([0,6], game, "Queen", "black")
+    p3 = create_piece([7,7], game, "King", "black")
+    p4 = create_piece([1,6], game, "Rook", "black")
+    assert_equal true, game.check_mate?
+
+  end
+
+    test "checkmate false king move" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([0,6], game, "Queen", "black")
+    p3 = create_piece([7,7], game, "King", "black")
+    assert_equal false, game.check_mate?
+
+  end
+
+  test "checkmate false obstruction" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([0,6], game, "Queen", "black")
+    p3 = create_piece([7,7], game, "King", "black")
+    p4 = create_piece([1,6], game, "Rook", "black")
+    p5 = create_piece([4,2], game, "Rook", "white")
+    assert_equal false, game.check_mate?
+
+  end
+
+  test "checkmate true diagonal" do 
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([6,6], game, "Queen", "black")
+    p3 = create_piece([7,7], game, "King", "black")
+    p4 = create_piece([0,1], game, "Pawn", "white")
+    p5 = create_piece([1,0], game, "Bishop", "white")
+    assert_equal true, game.check_mate?
+  end
+
+  test "checkmate false block diagonal" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([6,6], game, "Queen", "black")
+    p3 = create_piece([7,7], game, "King", "black")
+    p4 = create_piece([0,1], game, "Pawn", "white")
+    p5 = create_piece([1,0], game, "Rook", "white")
+    assert_equal false, game.check_mate?
+  end
+
+  test "checkmate true pinned" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([6,6], game, "Queen", "black")
+    p3 = create_piece([7,7], game, "King", "black")
+    p4 = create_piece([0,1], game, "Pawn", "white")
+    p5 = create_piece([1,0], game, "Rook", "white")
+    p6 = create_piece([5,0], game, "Rook", "black")
+    assert_equal true, game.check_mate?
+  end
+
+  test "checkmate false take piece" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([6,6], game, "Queen", "black")
+    p3 = create_piece([7,7], game, "King", "black")
+    p4 = create_piece([0,1], game, "Pawn", "white")
+    p5 = create_piece([1,0], game, "Bishop", "white")
+    p6 = create_piece([6,3], game, "Rook", "white")
+    assert_equal false, game.check_mate?
+  end
+
+  test "checkmate true diagonal next to king" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([1,1], game, "Queen", "black")
+    p3 = create_piece([2,2], game, "King", "black")
+    p4 = create_piece([0,1], game, "Pawn", "white")
+    p5 = create_piece([1,0], game, "Bishop", "white")
+    assert_equal true, game.check_mate?
+  end
+
+  test "checkmate true pinned cannot take" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([1,1], game, "Queen", "black")
+    p3 = create_piece([2,2], game, "King", "black")
+    p4 = create_piece([0,1], game, "Pawn", "white")
+    p5 = create_piece([1,0], game, "Rook", "white")
+    p6 = create_piece([7,0], game, "Rook", "black")
+    assert_equal true, game.check_mate?
+  end
+
+  test "checkmate true two knights" do
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([1,2], game, "Knight", "black")
+    p3 = create_piece([0,2], game, "King", "black")
+    p4 = create_piece([2,2], game, "Knight", "black")
+    assert_equal true, game.check_mate?
+  end
+
+  test "bishop checkmate false" do 
+    game = create_pieceless_game
+    p1 = create_piece([0,0], game, "King", "white")
+    p2 = create_piece([3,7], game, "Queen", "black")
+    p3 = create_piece([4,7], game, "King", "black")
+    p4 = create_piece([4,6], game, "Pawn", "black")
+    p5 = create_piece([5,6], game, "Pawn", "black")
+    p6 = create_piece([5,7], game, "Rook", "black")
+    p7 = create_piece([0,5], game, "Bishop", "black")
+    p8 = create_piece([1,4], game, "Bishop", "white")
+    assert_equal false, game.check_mate?
+
+  end
+
 end
