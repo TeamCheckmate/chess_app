@@ -4,6 +4,7 @@ class Game < ActiveRecord::Base
   has_many   :pieces
   has_many :moves, through: :pieces
   after_create :populate_the_pieces!
+  require 'pry'
 
   delegate :pawns, :rooks, :knights, :bishops, :kings, :queens, to: :pieces
   
@@ -66,13 +67,20 @@ class Game < ActiveRecord::Base
     start_piece= self.pieces.where(x_coord: start_x, y_coord: start_y).first
     destn_piece = self.pieces.where(x_coord: destn_x, y_coord: destn_y).first
 
-    if start_x - destn_x == 0
+    return true if destn_x < 0 || destn_x > 7
+    return true if destn_y < 0 || destn_y > 7
+
+    if start_x == destn_x    
       if start_piece.piece_type == "Pawn" && start_piece.color == "white" 
         return true if !piece_in_front?(start_x, start_y, 1) 
       elsif  start_piece.piece_type == "Pawn" && start_piece.color == "black" 
         return true if !piece_in_front?(start_x, start_y, -1) 
       end
     end
+
+    # if start_piece.piece_type == "Rook" && self.castle?(destn_x, start_piece.color)
+    #   return false
+    # end
 
     if !destn_piece.nil? && destn_piece.color == start_piece.color 
       return true
@@ -113,26 +121,174 @@ class Game < ActiveRecord::Base
     return false
   end
 
-   def castle?(new_x, new_y, color)
+
+   def castle?(new_x, color)
     #no pieces between rook and king
     #rook and king must be in original positions
-    castle_king = self.pieces.where(:piece_type => "King", :color => color)
+    castle_king = self.pieces.where(:piece_type => "King", :color => color).first
+    return false if (castle_king.x_coord - new_x).abs != 2
     if new_x > 4 
-      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 7)
+      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 7).first
+      operation = :+
     else
-      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 0)
+      castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 0).first
+      operation = :-
     end
       if !castle_rook.present?
         return false
       elsif castle_king.moves.empty? && castle_rook.moves.empty?
+        return false if self.in_check?(castle_king.color)
+        old_x = castle_king.x_coord
+        new_x = old_x
+          2.times do |x|
+            new_x = new_x.send(operation, 1)
+            if self.pieces.where(:x_coord => new_x, :y_coord => castle_king.y_coord).first.nil?
+              move_square = true
+            else
+              move_square = false
+            end
+            castle_king.update_attributes(x_coord: new_x)
+            if self.in_check?(castle_king.color) || !move_square
+              castle_king.update_attributes(x_coord: old_x)
+              return false
+            end
+          end
+          castle_king.update_attributes(x_coord: old_x)
         return true
       else
         return false
       end
   end
 
-  private
+  def check_mate?
+    # check for check
+    check_color = nil
+    if in_check?("white")
+      check_king = self.pieces.where(piece_type: "King", color: "white").first
+      check_color = "black"
+    elsif in_check?("black")
+      check_king = self.pieces.where(piece_type: "King", color: "black").first
+      check_color = "white"
+    end
+    
+    if check_color.nil?
+      return false
+    else
+      # check if king can move out of check    
+
+      old_x = check_king.x_coord
+      old_y = check_king.y_coord
+      [:+,:-].each do |operation|
+          new_x = check_king.x_coord.send(operation,1)
+          new_y = check_king.y_coord.send(operation,1)
+          if check_king.move_valid?(new_x, check_king.y_coord)
+            check_king.update_attributes(:x_coord => new_x)
+            if !in_check?(check_king.color)
+              check_king.update_attributes(:x_coord => old_x)
+              return false
+            end
+            check_king.update_attributes(:x_coord => old_x)
+          end
+          if check_king.move_valid?(check_king.x_coord, new_y)
+            check_king.update_attributes(:y_coord => new_y)
+            if !in_check?(check_king.color)
+              check_king.update_attributes(:y_coord => old_y)
+              return false
+            end
+            check_king.update_attributes(:y_coord => old_y)
+          end
+          [:+,:-].each do |operation_2|
+             new_y = check_king.y_coord.send(operation_2, 1)
+             if check_king.move_valid?(new_x, new_y)
+               check_king.update_attributes(:x_coord => new_x, :y_coord => new_y)
+               if !in_check?(check_king.color)
+                check_king.update_attributes(:x_coord => old_x, :y_coord => old_y)
+                puts "x, y = #{new_x}, #{new_y}"
+                return false
+               end
+               check_king.update_attributes(:x_coord => old_x, :y_coord => old_y)
+             end
+          end
+      end
+
+      check_piece = find_check_piece(check_color, check_king)
+
+      defend_pieces = self.pieces.where(color: check_king.color)
+
+      if check_piece.piece_type != "Knight"
+        upper_x = [check_piece.x_coord, check_king.x_coord].max
+        lower_x = [check_piece.x_coord, check_king.x_coord].min
+        upper_y = [check_piece.y_coord, check_king.y_coord].max
+        lower_y = [check_piece.y_coord, check_king.y_coord].min
   
+        check_line = []
+        if upper_x == lower_x
+          (lower_y+1...upper_y).each do |y|
+            check_line << [upper_x, y]
+          end
+        elsif upper_y == lower_y
+          (lower_x+1...upper_x).each do |x|
+            check_line << [x, upper_y] 
+          end
+        else
+          y = lower_y+1
+          (lower_x+1...upper_x).each do |x|
+            check_line << [x, y]
+            y += 1
+          end
+        end
+  
+        check_line.each do |square|
+          defend_pieces.each do |piece|
+            if piece.x_coord != nil && piece.piece_type != 'King' && piece.move_valid?(square[0], square[1])
+              old_x = piece.x_coord
+              old_y = piece.y_coord
+              piece.update_attributes(:x_coord => square[0], :y_coord => square[1])
+              if !in_check?(piece.color)
+                piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
+                return false
+              end
+              piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
+            end
+          end
+        end
+      end
+
+      # try and take the piece
+      attack_x = check_piece.x_coord
+      attack_y = check_piece.y_coord
+      defend_pieces.each do |piece|
+        if !piece.x_coord.nil? && piece.move_valid?(attack_x, attack_y)
+          old_x = piece.x_coord
+          old_y = piece.y_coord
+          check_piece.update_attributes(:x_coord => nil, :y_coord => nil)
+          piece.update_attributes(:x_coord => attack_x, :y_coord => attack_y)
+          if !in_check?(piece.color)
+            piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
+            check_piece.update_attributes(:x_coord => attack_x, :y_coord => attack_y)
+            return false
+          end
+          piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
+          check_piece.update_attributes(:x_coord => attack_x, :y_coord => attack_y)
+        end
+   
+      end
+    end
+
+    true
+  end
+
+  private
+
+  def find_check_piece(check_color, check_king)
+    check_pieces = self.pieces.where(color: check_color)
+    check_pieces.each do |piece|
+      if piece.move_valid?(check_king.x_coord, check_king.y_coord)
+        return piece
+      end
+    end
+  end
+
   def piece_in_front?(x_coord, y_coord, operater)
     self.pieces.where(x_coord: x_coord, y_coord: y_coord+operater).empty?
   end

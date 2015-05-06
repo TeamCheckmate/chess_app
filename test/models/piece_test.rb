@@ -1,10 +1,12 @@
 require 'test_helper'
+# require 'pry'
 
 class PieceTest < ActiveSupport::TestCase
 
   test "king_move_valid" do
 	game = create_pieceless_game
-	king = game.pieces.create(x_coord: 2, y_coord: 2, piece_type: "King")
+	king = game.pieces.create(x_coord: 2, y_coord: 2, piece_type: "King", color: "black")
+  # rook = game.pieces.create(x_coord: 0, y_coord: 0, piece_type: "Rook", color: "black")
 
 	# valid moves, king moves one square in any direction
 	[:+,:-].each do |operation|
@@ -53,7 +55,8 @@ class PieceTest < ActiveSupport::TestCase
 
   test "rook_move_valid" do
     game = create_pieceless_game
-    rook = game.pieces.create(x_coord: 4, y_coord: 4, piece_type: "Rook")
+    rook = game.pieces.create(x_coord: 4, y_coord: 4, piece_type: "Rook", color: "black")
+    king = game.pieces.create(x_coord: 0, y_coord: 0, piece_type: "King", color: "black")
 
     [:+,:-].each do |operation|
       # horizontal
@@ -98,4 +101,14 @@ class PieceTest < ActiveSupport::TestCase
     # destination same as original coordinate
     assert_equal false, bishop.move_valid?(4,4)
   end
+
+  test "king castle" do
+    game = create_pieceless_game
+    king = game.pieces.create(x_coord: 3, y_coord: 0, piece_type: "King", color: "black")
+    rook = game.pieces.create(x_coord: 0, y_coord: 0, piece_type: "Rook", color: "black")
+
+    assert_equal true, king.game.castle?(1, "black")
+    assert_equal true, rook.move_valid?(2,0)
+  end
+
 end

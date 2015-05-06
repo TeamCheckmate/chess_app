@@ -55,6 +55,7 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
+gem 'pry'
 
 gem 'devise', '>= 3.2.4'
 
