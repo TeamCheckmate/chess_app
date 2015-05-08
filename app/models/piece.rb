@@ -43,19 +43,20 @@ class Piece < ActiveRecord::Base
       destn_piece.update_attributes(:x_coord => nil, :y_coord => nil)
       self.create_move!
     end
-      if self.piece_type == "King" && self.game.castle?(new_x, self.color)
-            if new_x > self.x_coord 
-              rook = self.game.pieces.where(:x_coord => 7, :y_coord => self.y_coord).first
-              rook.update_attributes(:x_coord => new_x - 1)
-              self.create_move!
-            else
-              rook = self.game.pieces.where(:x_coord => 0, :y_coord => self.y_coord).first
-              rook.update_attributes(:x_coord => new_x + 1)
-              self.create_move!
-            end
-        self.update(:x_coord => new_x, :y_coord => new_y)
-        return :castle
+    
+    if self.piece_type == "King" && self.game.castle?(new_x, self.color)
+      if new_x > self.x_coord 
+        rook = self.game.pieces.where(:x_coord => 7, :y_coord => self.y_coord).first
+        rook.update_attributes(:x_coord => new_x - 1)
+        self.create_move!
+      else
+        rook = self.game.pieces.where(:x_coord => 0, :y_coord => self.y_coord).first
+        rook.update_attributes(:x_coord => new_x + 1)
+        self.create_move!
       end
+      self.update(:x_coord => new_x, :y_coord => new_y)
+      return :castle
+    end
       old_x = self.x_coord
       old_y = self.y_coord
       self.update(:x_coord => new_x, :y_coord => new_y)

@@ -111,4 +111,10 @@ class PieceTest < ActiveSupport::TestCase
     assert_equal true, rook.move_valid?(2,0)
   end
 
+  test "capture" do 
+    game = create_pieceless_game
+    white_pawn = game.pieces.create(x_coord: 2, y_coord: 3, piece_type: "Pawn", color: "white")
+    black_pawn = game.pieces.create(x_coord: 2, y_coord: 4, piece_type: "Pawn", color: "black")
+  end
+
 end

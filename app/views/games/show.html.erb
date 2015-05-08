@@ -20,76 +20,26 @@
   </div>
 </div>
 
-  <script>
-  $ (function() {
-    $( ".pieces" ).draggable({
-       containment: '#chess_board',
-       cursor: 'move',
-     });
-     
-     $( ".square" ).droppable({
-      drop: handleDropEvent
-    });
-  });
 
-  function handleDropEvent( event, ui ) {
-    var x = $(event.target).data("x-coord");
-    var y = $(event.target).data("y-coord");
-    var draggable = ui.draggable;
-    var piece_id = draggable.data("piece-id");
-    window.piece_id = piece_id; //bad idea 
-    
-    $(this).append(draggable.css('position','static'))
+   <!-- Button trigger modal -->
+<button type="button" class="btn-xs btn-primary" data-toggle="modal" data-target="#myEditModal" id="myEditModalButton">
+  Launch demo modal
+</button>
 
-    $.ajax({
-          type: 'PUT', 
-          statusCode: {
-            205: function() {
-              location.reload();
-            },
-            422: function() {
-              location.reload();          
-            },
-            206: function(){
-              location.reload();
-            },
-            204: function() {
-              alert("Check Mate!");
-            }
-          },
-          url: draggable.data('update-url'),
-          dataType: 'json',
-          data: { piece: {x_coord: x, y_coord: y}}
-        });
-  }
-  
-  $(".promote").click(function() {
-    $.ajax({
-      type: "PUT",
-
-      // send piece_id 
-    })
-  });
-  </script> 
-     <!-- Button trigger modal -->
-  <button type="button" class="btn-xs btn-primary" data-toggle="modal" data-target="#myEditModal" id="myEditModalButton">
-    Launch demo modal
-  </button>
-
-  <!-- Modal -->
-  <div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="myEditModalLabel">Promote to</h4>
-        </div>
-        <div class="modal-body">
-          <%= render "pieces/form" %>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
+<!-- Modal -->
+<div class="modal fade" id="myEditModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myEditModalLabel">Promote to</h4>
+      </div>
+      <div class="modal-body">
+        <%= render "pieces/form" %>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
+</div>
