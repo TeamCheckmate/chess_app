@@ -1,3 +1,9 @@
 // Place all the styles related to the welcome controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.hero {
+	@extend .col-xs-12;
+	@extend .col-sm-6;
+	@extend .col-sm-offset-3;
+}
