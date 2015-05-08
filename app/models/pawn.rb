@@ -51,5 +51,12 @@ class Pawn < Piece
 
   def x_within_one?(new_x)
     (new_x - x_coord).abs == 1 
-  end     
+  end
+
+  def en_passant(new_x, new_y)
+    # if a pawn attempts to move two squares forward to avoid capture
+    #need to allow pawn at pawn's side to capture piece
+
+  end
+
 end

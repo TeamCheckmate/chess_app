@@ -1,4 +1,5 @@
 require 'test_helper'
+# require 'pry'
 
 class PiecesControllerTest < ActionController::TestCase
   # test "the truth" do
@@ -41,7 +42,7 @@ class PiecesControllerTest < ActionController::TestCase
     sign_in user
 
     game = create_pieceless_game
-    piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Rook')
+    piece = game.pieces.create(:x_coord => 1, :y_coord => 1, :piece_type => 'Rook', :color => "black")
     piece4 = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'King', :color => "black")
     piece5 = game.pieces.create(:x_coord => 7, :y_coord => 7, :piece_type => 'King', :color => "white")
     put :update, id: piece.id, :piece => {x_coord: 3, y_coord: 2}
@@ -99,6 +100,39 @@ class PiecesControllerTest < ActionController::TestCase
     piece4 = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'King', :color => "black")
     put :update, :id => piece.id, :piece => {:x_coord => 0, :y_coord => 7}
     assert_response :partial_content
+  end
+
+  test "white castled" do
+    user = FactoryGirl.create(:user)
+    sign_in user
+
+    game = create_pieceless_game
+    piece = game.pieces.create(:x_coord => 7, :y_coord => 0, :piece_type => 'Rook', :color => "white")
+    piece2 = game.pieces.create(:x_coord => 3, :y_coord => 0, :piece_type => 'King', :color => "white")
+    piece3 = game.pieces.create(:x_coord => 0, :y_coord => 7, :piece_type => 'King', :color => "black")
+
+    # assert_equal true, piece2.move_valid?(5, 0)
+    # assert_equal true, game.castle?(5, "white")
+    assert_equal true, piece2.piece_type == "King" 
+    assert_equal true, piece2.game.castle?(5, piece2.color)
+    put :update, :id => piece2.id, :piece => {:x_coord => 5, :y_coord => 0}
+    assert_equal 4, piece.reload.x_coord
+
+  end
+
+  test "white castle king side" do
+    user = FactoryGirl.create(:user)
+    sign_in user
+
+    game = create_pieceless_game
+    piece = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'Rook', :color => "white")
+    piece2 = game.pieces.create(:x_coord => 3, :y_coord => 0, :piece_type => 'King', :color => "white")
+    piece3 = game.pieces.create(:x_coord => 7, :y_coord => 7, :piece_type => 'King', :color => "black")
+
+    assert_equal true, piece2.game.castle?(1, piece2.color)
+    put :update, :id => piece2.id, :piece => {:x_coord => 1, :y_coord => 0}
+    assert_equal 2, piece.reload.x_coord
+
   end
 
 end
