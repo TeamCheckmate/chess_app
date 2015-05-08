@@ -41,9 +41,8 @@ class Piece < ActiveRecord::Base
     destn_piece = self.game.square_occupied(new_x, new_y).first
     unless destn_piece.nil?
       destn_piece.update_attributes(:x_coord => nil, :y_coord => nil)
-      self.create_move!
     end
-    
+
     if self.piece_type == "King" && self.game.castle?(new_x, self.color)
       if new_x > self.x_coord 
         rook = self.game.pieces.where(:x_coord => 7, :y_coord => self.y_coord).first
@@ -57,34 +56,34 @@ class Piece < ActiveRecord::Base
       self.update(:x_coord => new_x, :y_coord => new_y)
       return :castle
     end
-      old_x = self.x_coord
-      old_y = self.y_coord
-      self.update(:x_coord => new_x, :y_coord => new_y)
+
+    old_x = self.x_coord
+    old_y = self.y_coord
+    self.update(:x_coord => new_x, :y_coord => new_y)
+
     if self.game.in_check?(self.color)
       unless destn_piece.nil?
         destn_piece.update_attributes(:x_coord => new_x, :y_coord => new_y)
         self.create_move!
       end
-        self.update_attributes(:x_coord => old_x, :y_coord => old_y)
+
+      self.update_attributes(:x_coord => old_x, :y_coord => old_y)
       return :invalid_move
-    else
-       if self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7
-          self.create_move!
-          return :pawn_promote
-       elsif
-        destn_piece.nil?
+    elsif self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7
         self.create_move!
-        return :valid_move
-      else
-        return :reload
-      end
+        return :pawn_promote
+    elsif destn_piece.nil?
+      self.create_move!
+      return :valid_move
+    else
+      self.create_move!
+      return :reload
     end
   end
 
   def pawn_promotion?
     self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7
   end      
-
 
 end
 

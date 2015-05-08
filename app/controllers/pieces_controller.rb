@@ -18,7 +18,7 @@ class PiecesController < ApplicationController
 
     if @piece.move_valid?(new_x, new_y)
       status_code = @piece.move_to!(new_x, new_y)
-      
+
       if @game.check_mate?
        render :json => {:message => "check mate"}, :status => :no_content
       elsif status_code == :valid_move
@@ -26,7 +26,7 @@ class PiecesController < ApplicationController
       elsif status_code == :reload
         render :json => {:message => "piece taken"}, :status => :reset_content
       elsif status_code == :pawn_promote
-        render :json => {:message => "pawn promoted"}, :status => :partial_content
+        render :json => {:pawn_id => @piece.id, :message => "pawn promoted"}, :status => :partial_content
       elsif status_code == :castle
         render :json => {:message => "castled"}, :status => :reset_content
       else
