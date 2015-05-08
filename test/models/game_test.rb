@@ -257,4 +257,46 @@ class GameTest < ActiveSupport::TestCase
 
   end
 
+  test "white can castle" do
+   game = create_pieceless_game
+   p1 = create_piece([3,0], game, "King", "white")
+   p2 = create_piece([0,0], game, "Rook", "white")
+   p3 = create_piece([3,7], game, "King", "black")
+
+   assert_equal true, game.castle?(1, "white")
+  end
+
+  test "white cannot castle no rook" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([0,0], game, "Rook", "white")
+    p3 = create_piece([3,7], game, "King", "black")
+
+   assert_equal false, game.castle?(5, "white")
+
+  end
+
+  test "white cannot castle in check" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([0,0], game, "Rook", "white")
+    p3 = create_piece([3,7], game, "King", "black")
+    p4 = create_piece([2,5], game, "Rook", "black")
+
+   assert_equal false, game.castle?(1, "white")
+
+  end
+
+   test "white cannot castle" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([0,0], game, "Rook", "white")
+    p3 = create_piece([3,7], game, "King", "black")
+    p4 = create_piece([2,0], game, "Knight", "white")
+
+   assert_equal false, game.castle?(1, "white")
+
+  end
+
+
 end
