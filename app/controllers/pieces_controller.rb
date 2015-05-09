@@ -18,7 +18,6 @@ class PiecesController < ApplicationController
 
     if @piece.move_valid?(new_x, new_y)
       status_code = @piece.move_to!(new_x, new_y)
-      puts status_code.inspect
       if @game.check_mate?
        render :json => {:message => "check mate"}, :status => :no_content
       elsif status_code == :valid_move

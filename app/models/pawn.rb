@@ -4,7 +4,26 @@ class Pawn < Piece
 
     valid_vertical_move?(new_y, new_x)   || 
     valid_start_move?(new_y, new_x) ||
-    valid_diagonal_move?(new_x, new_y)  
+    valid_diagonal_move?(new_x, new_y) ||
+    en_passant?(new_x, new_y)
+  end
+
+  def en_passant?(new_x, new_y)
+    if self.color == "white"
+      operation = -1
+    else
+      operation = 1
+    end
+    check_y = new_y + operation
+    behind_piece = self.game.square_occupied(new_x, check_y).first
+    if x_within_one?(new_x) && y_within_one?(new_y)
+      if !behind_piece.nil? && behind_piece.piece_type == "Pawn" && behind_piece.color != self.color
+        if behind_piece.id == self.game.moves.last.piece_id && behind_piece.moves.count == 1
+          return true
+        end
+      end
+    end
+    false
   end
 
   private 
@@ -29,6 +48,7 @@ class Pawn < Piece
     return false
   end 
 
+
   def same_x?(new_x)
     new_x == x_coord
   end
@@ -51,12 +71,6 @@ class Pawn < Piece
 
   def x_within_one?(new_x)
     (new_x - x_coord).abs == 1 
-  end
-
-  def en_passant(new_x, new_y)
-    # if a pawn attempts to move two squares forward to avoid capture
-    #need to allow pawn at pawn's side to capture piece
-
   end
 
 end

@@ -111,4 +111,77 @@ class PieceTest < ActiveSupport::TestCase
     assert_equal true, rook.move_valid?(2,0)
   end
 
+test "white en passant" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([0,1], game, "Pawn", "white")
+    p3 = create_piece([3,7], game, "King", "black")
+    p4 = create_piece([1,3], game, "Pawn", "black")
+
+    p2.update_attributes(:x_coord => 0, :y_coord => 3)
+    p2.create_move!
+
+    assert_equal true, p4.en_passant?(0,2)
+
+  end
+
+ test "black en passant" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([0,4], game, "Pawn", "white")
+    p3 = create_piece([3,7], game, "King", "black")
+    p4 = create_piece([1,6], game, "Pawn", "black")
+
+    p4.move_to!(1,4)
+
+    assert_equal true, p2.en_passant?(1,5)
+    p2.move_to!(1,5)
+    assert_equal nil, p4.reload.x_coord
+  end
+
+  test "white not en passant" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([0,1], game, "Pawn", "white")
+    p3 = create_piece([3,7], game, "King", "black")
+    p4 = create_piece([2,3], game, "Pawn", "black")
+
+    p2.update_attributes(:x_coord => 0, :y_coord => 3)
+    p2.create_move!
+
+    assert_equal false, p4.en_passant?(0,2)
+
+  end
+
+ test "black not en passant" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([0,4], game, "Pawn", "white")
+    p3 = create_piece([3,7], game, "King", "black")
+    p4 = create_piece([1,5], game, "Pawn", "black")
+
+    p4.update_attributes(:x_coord => 1, :y_coord => 4)
+    p4.create_move!
+
+    assert_equal false, p4.en_passant?(1,5)
+
+  end
+
+  test "too many moves for en passant" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([0,4], game, "Pawn", "white")
+    p3 = create_piece([3,7], game, "King", "black")
+    p4 = create_piece([1,6], game, "Pawn", "black")
+
+    p4.update_attributes(:x_coord => 1, :y_coord => 5)
+    p4.create_move!
+    p4.update_attributes(:x_coord => 1, :y_coord => 4)
+    p4.create_move!
+
+    assert_equal false, p2.en_passant?(1,5)
+
+  end
+
+
 end
