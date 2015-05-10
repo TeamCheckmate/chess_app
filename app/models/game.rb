@@ -160,6 +160,7 @@ class Game < ActiveRecord::Base
       end
   end
 
+
   def check_mate?
     # check for check
     check_color = nil
