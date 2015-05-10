@@ -1,3 +1,16 @@
 // Place all the styles related to the games controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+.pawn-promotion-list {
+	list: none;	
+}
+
+.pawn-promotion-list li{
+	margin-bottom: 5px;
+
+}
+
+#myEditModalButton {
+	display: none;
+}
