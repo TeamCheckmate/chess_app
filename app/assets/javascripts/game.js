@@ -1,4 +1,35 @@
 $(document).ready(function() {
+  var check_pawn_promotion_url = $('#chess_board').attr('data-game-url');
+
+  $.ajax({
+    type: 'PATCH',
+    url: check_pawn_promotion_url,
+    dataType: 'json',
+    statusCode: {
+      206: function(data){
+        var pawn_id = data["pawn_id"];
+        $("#pawn-promote-button").trigger("click");
+        $(".promote").click(function() {
+          var piece_type = $(this).html();
+          var pawn_promote_url = '/pieces/' + pawn_id + '/change_piece_type/' + piece_type
+
+          $.ajax({
+            type: 'PATCH',
+            url: pawn_promote_url,
+            data: {},
+            dataType: 'json',
+            success: function(data) {
+              console.log(data);
+              $('.close').trigger("click");
+              location.reload();
+            }
+          });
+        });
+      }
+    }
+  });
+
+
   $(function() {
     $( ".pieces" ).draggable({
        containment: '#chess_board',
@@ -45,6 +76,7 @@ $(document).ready(function() {
                   success: function(data) {
                     console.log(data);
                     $('.close').trigger("click");
+                    location.reload();
                   }
                 });
               });

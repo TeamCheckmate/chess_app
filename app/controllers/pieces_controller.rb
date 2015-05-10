@@ -18,14 +18,7 @@ class PiecesController < ApplicationController
 
     if piece.move_valid?(new_x, new_y)
       status_code = piece.move_to!(new_x, new_y)
-
-<<<<<<< HEAD
       if game.check_mate?
-=======
-    if @piece.move_valid?(new_x, new_y)
-      status_code = @piece.move_to!(new_x, new_y)
-      if @game.check_mate?
->>>>>>> a3d00da1aac188f6c4fedf4a108a299c24d5a04f
        render :json => {:message => "check mate"}, :status => :no_content
       elsif status_code == :valid_move
         render :nothing => true
@@ -49,11 +42,11 @@ class PiecesController < ApplicationController
     piece_color = @piece.color
 
     promote_piece_image = get_image_name(piece_color, promote_piece_type)
-    
     @piece.update_attributes(:piece_type => promote_piece_type, :image_name => promote_piece_image)
     puts @piece.inspect
     render :json => {:message => 'updated piece type'}
   end
+
 
   def destroy
     @game = @piece.game_id
@@ -94,6 +87,8 @@ class PiecesController < ApplicationController
       piece_type = 'q'
     when "Bishop"
       piece_type = 'b'
+    when "Knight"
+      piece_type = 'n'
     end
 
     image_name = 'pieces/'+ piece_color + piece_type + '.png'
