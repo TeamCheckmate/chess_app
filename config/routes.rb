@@ -8,6 +8,6 @@ Rails.application.routes.draw do
   resources :games, :only => [:new, :create, :show, :update]
   resources :welcome, :only => [:index, :about]
   resources :pieces, :only => [:show, :update, :destroy, :edit] do 
-  	patch "pawn_promote/:piece_type", :to => "pieces#pawn_promote"
+  	patch "change_piece_type/:piece_type", :to => "pieces#change_piece_type"
   end
 end

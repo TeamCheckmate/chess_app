@@ -35,7 +35,7 @@ $(document).ready(function() {
               $("#pawn-promote-button").trigger("click");
               $(".promote").click(function() {
                 var piece_type = $(this).html();
-                var pawn_promote_url = '/pieces/' + pawn_id + '/pawn_promote/' + piece_type
+                var pawn_promote_url = '/pieces/' + pawn_id + '/change_piece_type/' + piece_type
 
                 $.ajax({
                   type: 'PATCH',
@@ -44,6 +44,7 @@ $(document).ready(function() {
                   dataType: 'json',
                   success: function(data) {
                     console.log(data);
+                    $('.close').trigger("click");
                   }
                 });
               });

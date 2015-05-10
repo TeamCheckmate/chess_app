@@ -135,4 +135,16 @@ class PiecesControllerTest < ActionController::TestCase
 
   end
 
+  test "update piece type" do
+    user = FactoryGirl.create(:user)
+    sign_in user
+
+    game = create_pieceless_game
+    piece = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'Pawn', :color => "white")
+    patch :change_piece_type, {:piece_id => piece.id, :piece_type => 'Queen'}
+    piece = Piece.find(piece.id)
+    assert_equal 'Queen', piece.piece_type
+    assert_equal 'pieces/wq.png', piece.image_name
+  end
+
 end

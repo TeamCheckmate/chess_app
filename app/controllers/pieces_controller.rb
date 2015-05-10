@@ -37,31 +37,15 @@ class PiecesController < ApplicationController
     end
   end
 
-  def pawn_promote 
+  def change_piece_type
     @piece = Piece.find(params[:piece_id])
     promote_piece_type = params[:piece_type]
     piece_color = @piece.color
 
-    
-    case piece_color
-    when "black"
-      image_color = 'b'
-    when "white"
-      image_color = 'w'
-    end
-
-    case promote_piece_type
-    when "Rook"
-      image_type = 'r'
-    when "Queen"
-      image_type = 'q'
-    when "Bishop"
-      image_type = 'b'
-    end
-
-    promote_piece_image = 'pieces/'+ image_color + image_type + '.png'
+    promote_piece_image = get_image_name(piece_color, promote_piece_type)
     
     @piece.update_attributes(:piece_type => promote_piece_type, :image_name => promote_piece_image)
+    puts @piece.inspect
     render :json => {:message => 'updated piece type'}
   end
 
@@ -88,4 +72,24 @@ class PiecesController < ApplicationController
   def new_y
     piece_params[:y_coord].to_i
   end
+
+  def get_image_name(piece_color, piece_type)
+    case piece_color
+    when "black"
+      piece_color = 'b'
+    when "white"
+      piece_color = 'w'
+    end
+
+    case piece_type
+    when "Rook"
+      piece_type = 'r'
+    when "Queen"
+      piece_type = 'q'
+    when "Bishop"
+      piece_type = 'b'
+    end
+
+    image_name = 'pieces/'+ piece_color + piece_type + '.png'
+  end   
 end
