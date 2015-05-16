@@ -1,17 +1,27 @@
 <div class="hero col-xs-12 col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4">
   <h1>Welcome to Chess</h1>
-  <div class="container col-xs-12 col-sm-offset-1">
+  <div>
     <p>Would you like to play a game?</p>
-  
-    <%= link_to "Sign Up", new_user_registration_path, :class => "btn btn-primary btn-md"%>
-    </br>
-    <%= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook) %>
+    <% if current_user %>
+      <br />    
+      <%= link_to "Create a Game", "#", :class => "btn btn-success btn-lg create-a-game-btn col-xs-12 col-sm-6 col-sm-offset-3", :data => {:toggle => "modal", :target => "#newDeckModal"} %>
+      <br class="clear" />
+      <br /> 
+      <%= link_to "Quick Play", "#", :class => "btn btn-info btn-lg create-a-game-btn col-xs-12 col-sm-6 col-sm-offset-3"%>
+    <% else %>
+      <%= link_to "Sign Up", new_user_registration_path, :class => "btn btn-warning btn-lg col-xs-12 col-sm-8 col-sm-offset-2"%>
+      <br class="clear"/>
+      <br />
+      <%= link_to "Sign in with Facebook", user_omniauth_authorize_path(:facebook), :class => "btn-lg btn btn-primary col-sm-8 col-sm-offset-2"%>
+    <% end %>
   </div>
 </div>
-
+<br class="clear" />
+<br />
 <br />
 
 <div class="booyah-box col-xs-10 col-xs-offset-1">
+
   <h2 class="text-center">Open Tournaments</h2>
   <hr />
 
@@ -29,4 +39,27 @@
       <% end %> 
     </div>
   <% end %>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newDeckModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="newDeckModalLabel">Create a Game</h4>
+      </div>
+
+      <%= form_for @game, url: games_path, method: :post, :html => {:id => 'newGameForm'} do |f| %>
+        <div class="modal-body">
+        <%= f.text_field :title %>     
+        </div>
+
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <%= f.submit "Create", :class => "btn btn-primary" %>
+      </div>
+      <% end %>
+    </div>
+  </div>
 </div>

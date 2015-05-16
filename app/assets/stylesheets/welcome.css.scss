@@ -5,3 +5,7 @@
 .hero {
 	padding-top: 50px;
 }
+
+.create-a-game-btn {
+	@extend .col-xs-offset-3;
+}
