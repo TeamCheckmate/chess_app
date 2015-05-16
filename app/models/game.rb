@@ -204,7 +204,7 @@ class Game < ActiveRecord::Base
                check_king.update_attributes(:x_coord => new_x, :y_coord => new_y)
                if !in_check?(check_king.color)
                 check_king.update_attributes(:x_coord => old_x, :y_coord => old_y)
-                puts "x, y = #{new_x}, #{new_y}"
+               
                 return false
                end
                check_king.update_attributes(:x_coord => old_x, :y_coord => old_y)

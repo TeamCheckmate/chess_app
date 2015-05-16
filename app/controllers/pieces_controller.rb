@@ -43,7 +43,7 @@ class PiecesController < ApplicationController
 
     promote_piece_image = get_image_name(piece_color, promote_piece_type)
     @piece.update_attributes(:piece_type => promote_piece_type, :image_name => promote_piece_image)
-    puts @piece.inspect
+    
     render :json => {:message => 'updated piece type'}
   end
 

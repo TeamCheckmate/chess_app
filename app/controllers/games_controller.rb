@@ -27,7 +27,7 @@ class GamesController < ApplicationController
 					pawn_id = pawn.id
 				end
 			end
-			puts pawn_id
+			
 			if pawn_id == -1
 				render :nothing
 			else
