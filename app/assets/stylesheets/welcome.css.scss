@@ -6,6 +6,9 @@
 	padding-top: 50px;
 }
 
-.create-a-game-btn {
-	@extend .col-xs-offset-3;
+
+.signed-in-button {
+	@extend .col-xs-12;
+	@extend .col-sm-8; 
+	@extend .col-sm-offset-2;
 }

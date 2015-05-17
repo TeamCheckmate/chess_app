@@ -17,10 +17,15 @@ class GamesControllerTest < ActionController::TestCase
   	user = FactoryGirl.create(:user)
   	sign_in user
 
+    title = "Test"
   	assert_difference 'Game.count' do 
-  		post :create, {:game => {:black_player_id => nil}}
+  		post :create, {:game => {:title => title}}
   	end
 
+    game = Game.last
+    puts game.inspect
+    assert_equal user, game.white_player
+    assert_equal title, game.title 
   	assert_redirected_to game_path(Game.last)
   end
 
