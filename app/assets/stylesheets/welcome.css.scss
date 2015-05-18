@@ -5,3 +5,10 @@
 .hero {
 	padding-top: 50px;
 }
+
+
+.signed-in-button {
+	@extend .col-xs-12;
+	@extend .col-sm-8; 
+	@extend .col-sm-offset-2;
+}
