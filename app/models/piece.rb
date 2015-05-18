@@ -80,7 +80,6 @@ class Piece < ActiveRecord::Base
       unless destn_piece.nil?
         destn_piece.update_attributes(:x_coord => new_x, :y_coord => new_y)
       end
-
       self.update_attributes(:x_coord => old_x, :y_coord => old_y)
       return :invalid_move
     elsif self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7

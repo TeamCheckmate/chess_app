@@ -298,6 +298,19 @@ class GameTest < ActiveSupport::TestCase
 
   end
 
+  
+   test "black stalemate" do
+    game = create_pieceless_game
+    p1 = create_piece([7,0], game, "King", "white")
+    p2 = create_piece([1,3], game, "Rook", "white")
+    p3 = create_piece([0,0], game, "King", "black")
+    p4 = create_piece([3,1], game, "Rook", "white")
+
+   assert_equal false, game.not_stalemate?("black")
+
+  end
+
+
 
 
 end

@@ -5,6 +5,21 @@ class Knight < Piece
     valid_vertical_move?(new_x, new_y)   || 
     valid_horizontal_move?(new_x, new_y)
   end
+
+  def valid_moves
+      valid_move =[]
+      move_two = [-2, 2]
+      move_one = [-1, 1]
+      move_two.each do |two|
+        move_one.each do |one|
+          coords = [x_coord + two, y_coord + one]
+          valid_move << coords
+          coords = [x_coord + one, y_coord + two]
+          valid_move << coords
+        end 
+      end    
+    valid_move
+  end
   
   private
 

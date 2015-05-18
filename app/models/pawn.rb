@@ -26,6 +26,21 @@ class Pawn < Piece
     false
   end
 
+  def valid_moves
+      valid_move =[]
+      (-1..1).each do |x|
+        (-1..1).each do |y|
+          coords = [x_coord + x, y_coord + y]
+          valid_move << coords
+        end
+      end
+      coords = [x_coord, y_coord + 2]
+      valid_move << coords
+      coords = [x_coord, y_coord - 2]
+      valid_move << coords
+    valid_move
+  end
+
   private 
   def valid_vertical_move?(new_y, new_x)
     y_within_one?(new_y) && same_x?(new_x)

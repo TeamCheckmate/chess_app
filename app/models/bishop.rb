@@ -4,6 +4,15 @@ class Bishop < Piece
     valid_diagonal_move?(new_x, new_y) 
   end
 
+  def valid_moves
+      valid_move =[]
+      (-7..7).each do |x|
+          coords = [x_coord + x, y_coord + x]
+          valid_move << coords
+      end
+    valid_move
+  end
+
   private
   def valid_diagonal_move?(new_x, new_y)
     x_distance(new_x) == y_distance(new_y) && x_distance(new_x) != 0

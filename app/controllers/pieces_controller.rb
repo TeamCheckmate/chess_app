@@ -18,7 +18,14 @@ class PiecesController < ApplicationController
 
     if piece.move_valid?(new_x, new_y)
       status_code = piece.move_to!(new_x, new_y)
-      if game.check_mate?
+      if piece.color == "white"
+        opp_color = "black"
+      else
+        opp_color = "white"
+      end
+      if !game.not_stalemate?(opp_color)
+        render :json => {:message => "stalemate"}, :status => :created
+      elsif game.check_mate?
        render :json => {:message => "check mate"}, :status => :no_content
       elsif status_code == :valid_move
         render :nothing => true
