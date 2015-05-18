@@ -1,16 +1,33 @@
-// Place all the styles related to the games controller here.
-// They will automatically be included in application.css.
-// You can use Sass (SCSS) here: http://sass-lang.com/
-
-.pawn-promotion-list {
-	list: none;	
-}
-
-.pawn-promotion-list li{
-	margin-bottom: 5px;
-
-}
-
 #myEditModalButton {
 	display: none;
+}
+
+#pawn-promote-button {
+	display: none; 
+}
+
+.players-list {
+
+	
+}
+
+#board-outline {
+	padding: 0;
+}
+
+#chess_board { 
+	border:5px solid #333;
+	display: inline-block; 
+}
+#chess_board td {
+  background: #fff;
+  height: 60px;
+  text-align:center;
+  vertical-align:middle;
+  width: 60px;
+}
+
+#chess_board tr:nth-child(odd) td:nth-child(even),
+#chess_board tr:nth-child(even) td:nth-child(odd) {
+  background: #ccc;
 }
