@@ -7,7 +7,7 @@ class GamesController < ApplicationController
 	end
 
 	def create
-		@game = Game.create(:white_player_id => current_user.id)
+		@game = Game.create(:white_player_id => current_user.id, :turn => "white")
 		redirect_to game_path(@game)
 	end
 	
