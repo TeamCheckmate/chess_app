@@ -121,6 +121,27 @@ class Game < ActiveRecord::Base
     return false
   end
 
+  def not_stalemate?(color)
+    pieces = self.pieces.where(:color => color)
+    pieces.each do |piece|
+      valid = piece.valid_moves
+      old_x = piece.x_coord
+      old_y = piece.y_coord
+      valid.each do |v|
+        # return true 
+        if piece.move_valid?(v[0], v[1])
+          piece.update_attributes(:x_coord => v[0], :y_coord => v[1])
+          if !in_check?(color)
+            piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
+            return true
+          else
+            piece.update_attributes(:x_coord => old_x, :y_coord => old_y)
+          end
+        end
+      end
+    end
+    return false
+  end
 
    def castle?(new_x, color)
     #no pieces between rook and king

@@ -21,6 +21,17 @@ class King < Piece
 		return false
 	end
 
+	def valid_moves
+			valid_move =[]
+			(-1..1).each do |x|
+				(-1..1).each do |y|
+					coords = [x_coord + x, y_coord + y]
+					valid_move << coords
+				end
+			end
+		valid_move
+	end
+
 	private 
 
 	def valid_vertical_move?(new_x, new_y)

@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20150516190326) do
     t.integer  "black_player_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "playerturn",      default: "white"
     t.string   "title"
   end
 
