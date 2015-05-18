@@ -46,7 +46,6 @@ $(document).ready(function() {
     var y = $(event.target).data("y-coord");
     var draggable = ui.draggable;
     var piece_id = draggable.data("piece-id");
-    window.piece_id = piece_id; //bad idea 
     
     $(this).append(draggable.css('position','static'))
 
@@ -54,7 +53,6 @@ $(document).ready(function() {
           type: 'PUT', 
           statusCode: {
             205: function() {
-
               location.reload();
             },
             422: function() {

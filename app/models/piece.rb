@@ -83,7 +83,7 @@ class Piece < ActiveRecord::Base
 
       self.update_attributes(:x_coord => old_x, :y_coord => old_y)
       return :invalid_move
-    elsif self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7
+    elsif self.piece_type == "Pawn" && (self.y_coord == 0 || self.y_coord == 7)
       self.create_move!
       return :pawn_promote
     elsif destn_piece.nil?

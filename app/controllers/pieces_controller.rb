@@ -16,6 +16,10 @@ class PiecesController < ApplicationController
     @game_id = piece.game_id
     game = Game.where(id: @game_id).first
 
+    if original_position?(new_x, new_y)
+      render :nothing => true
+    end
+
     if piece.move_valid?(new_x, new_y)
       status_code = piece.move_to!(new_x, new_y)
       if game.check_mate?
@@ -56,11 +60,15 @@ class PiecesController < ApplicationController
 
   private
   def piece
-    @piece = Piece.find(params[:id]) 
+    @piece ||= Piece.find(params[:id]) 
   end
 
   def piece_params
     params.require(:piece).permit(:x_coord, :y_coord, :game_id, :piece_type)
+  end
+
+  def original_position?(x, y)
+    @piece.x_coord == x && @piece.y_coord == y
   end
 
   def new_x 
