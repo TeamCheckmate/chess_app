@@ -12,4 +12,5 @@ test "king move to castle" do
     assert_equal true, king.move_valid?(6,0)
   end
 
+
 end
