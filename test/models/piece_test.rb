@@ -183,5 +183,129 @@ test "white en passant" do
 
   end
 
+  test "move to switch turn valid move" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([0,4], game, "Pawn", "white")
+    p3 = create_piece([3,7], game, "King", "black")
 
+    assert_equal "white", game.playerturn
+    p2.move_to!(0,5)
+    assert_equal "black", game.playerturn
+  end
+
+  test "threefold repetition king" do
+    game = create_pieceless_game
+    p1 = create_piece([3,0], game, "King", "white")
+    p2 = create_piece([3,7], game, "King", "black")
+
+    # start from original position
+    p1.move_to!(3,1)
+    assert_not p1.threefold_repetition?(3,0)
+
+    p1.move_to!(3,0)  #second time on original position
+    p1.move_to!(3,1)
+    assert_equal true, p1.threefold_repetition?(3,0)
+
+    p2.move_to!(3,6)
+    p2.move_to!(4,6)
+
+    # repetition square (3,2)
+    p1.move_to!(3,2)  # => first time on 3,2
+    p1.move_to!(3,3)  
+    assert_not p1.threefold_repetition?(3,2)
+
+    p1.move_to!(3,2)  # => second time on 3,2
+    p1.move_to!(4,2)
+    p2.move_to!(4,7)
+
+    assert_equal true, p1.threefold_repetition?(3,2)
+  end
+
+  test "threefold repetition bishop" do
+    game = create_pieceless_game
+    w_k = create_piece([3,0], game, "King", "white")
+    b_k = create_piece([3,7], game, "King", "black")
+    w_b = create_piece([2,0], game, "Bishop", "white")
+
+    # start from original position
+    w_b.move_to!(1,1)
+    assert_not w_b.threefold_repetition?(2, 0)
+
+    w_b.move_to!(2,0)  # second time on original position
+    w_b.move_to!(1,1)
+    assert_equal true, w_b.threefold_repetition?(2,0)
+
+    # repetition square (2,2)
+    w_b.move_to!(2,2)  # => first time on 2,2
+    w_b.move_to!(1,3)
+    w_k.move_to!(2,0)
+    w_b.move_to!(2,2)  # => second time on 2,2
+    b_k.move_to!(3,6)
+    w_b.move_to!(3,1)
+    assert_equal true, w_b.threefold_repetition?(2,2)
+  end
+
+  test "threefold repetition rook" do
+    game = create_pieceless_game
+    w_k = create_piece([3,0], game, "King", "white")
+    b_k = create_piece([3,7], game, "King", "black")
+    b_r = create_piece([0,7], game, "Rook", "black")
+
+    # start from original position
+    b_r.move_to!(0,6)
+    assert_not b_r.threefold_repetition?(0, 7)
+
+    b_r.move_to!(0,7)
+    b_r.move_to!(0,6)
+    assert_equal true, b_r.threefold_repetition?(0,7)
+
+    b_r.move_to!(0,5)
+    b_r.move_to!(0,4)
+    w_k.move_to!(3,1)
+    b_r.move_to!(0,5)
+    b_r.move_to!(0,4)
+    assert_equal true, b_r.threefold_repetition?(0,5)
+  end
+
+  test "threefold repetition knight" do
+    game = create_pieceless_game
+    w_k = create_piece([3,0], game, "King", "white")
+    b_k = create_piece([3,7], game, "King", "black")
+    w_n = create_piece([1,0], game, "Knight", "white")
+
+    # start from original position
+    w_n.move_to!(3,1)
+    assert_not w_n.threefold_repetition?(1,0)
+
+    w_n.move_to!(1,0)
+    w_n.move_to!(3,1)
+
+    assert_equal true, w_n.threefold_repetition?(1,0)
+  end
+
+  test "threefold repetition pawn" do
+    game = create_pieceless_game
+    w_k = create_piece([3,0], game, "King", "white")
+    b_k = create_piece([3,7], game, "King", "black")
+    w_p = create_piece([1,1], game, "Pawn", "white")
+
+    assert_not w_p.threefold_repetition?(1,2)
+  end
+
+  test "threefold repetition queen" do
+    game = create_pieceless_game
+    w_k = create_piece([3,0], game, "King", "white")
+    b_k = create_piece([3,7], game, "King", "black")
+    w_q = create_piece([4,0], game, "Queen", "white")
+
+     # start from original position
+    w_q.move_to!(4,1)
+    assert_not w_q.threefold_repetition?(4,0)
+
+    w_q.move_to!(4,0)
+    w_q.move_to!(5,1)
+
+    assert_equal true, w_q.threefold_repetition?(4,0)
+  end
 end

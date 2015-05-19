@@ -63,7 +63,10 @@ class Pawn < Piece
     return false
   end 
 
-
+  def threefold_repetiton?(new_x, new_y)
+    false
+  end
+  
   def same_x?(new_x)
     new_x == x_coord
   end

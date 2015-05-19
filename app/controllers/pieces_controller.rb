@@ -16,7 +16,7 @@ class PiecesController < ApplicationController
     @game_id = piece.game_id
     game = Game.where(id: @game_id).first
 
-    if original_position?(new_x, new_y)
+    if moved?(new_x, new_y)
       render :nothing => true
     end
 
@@ -74,7 +74,7 @@ class PiecesController < ApplicationController
     params.require(:piece).permit(:x_coord, :y_coord, :game_id, :piece_type)
   end
 
-  def original_position?(x, y)
+  def moved?(x, y)
     @piece.x_coord == x && @piece.y_coord == y
   end
 

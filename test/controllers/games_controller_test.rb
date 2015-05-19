@@ -23,7 +23,6 @@ class GamesControllerTest < ActionController::TestCase
   	end
 
     game = Game.last
-    puts game.inspect
     assert_equal user, game.white_player
     assert_equal title, game.title 
   	assert_redirected_to game_path(Game.last)

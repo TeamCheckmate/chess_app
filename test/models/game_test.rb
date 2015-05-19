@@ -273,7 +273,6 @@ class GameTest < ActiveSupport::TestCase
     p3 = create_piece([3,7], game, "King", "black")
 
    assert_equal false, game.castle?(5, "white")
-
   end
 
   test "white cannot castle in check" do
@@ -283,11 +282,10 @@ class GameTest < ActiveSupport::TestCase
     p3 = create_piece([3,7], game, "King", "black")
     p4 = create_piece([2,5], game, "Rook", "black")
 
-   assert_equal false, game.castle?(1, "white")
-
+    assert_equal false, game.castle?(1, "white")
   end
 
-   test "white cannot castle" do
+  test "white cannot castle" do
     game = create_pieceless_game
     p1 = create_piece([3,0], game, "King", "white")
     p2 = create_piece([0,0], game, "Rook", "white")
@@ -295,22 +293,22 @@ class GameTest < ActiveSupport::TestCase
     p4 = create_piece([2,0], game, "Knight", "white")
 
    assert_equal false, game.castle?(1, "white")
-
   end
 
-  
-   test "black stalemate" do
+  test "black stalemate" do
     game = create_pieceless_game
     p1 = create_piece([7,0], game, "King", "white")
     p2 = create_piece([1,3], game, "Rook", "white")
     p3 = create_piece([0,0], game, "King", "black")
     p4 = create_piece([3,1], game, "Rook", "white")
 
-   assert_equal false, game.not_stalemate?("black")
-
+    assert_equal false, game.not_stalemate?("black")
   end
 
-
-
-
+  test "game switch turn" do
+    game = create_pieceless_game
+    assert_equal "white", game.playerturn
+    game.switch_turn
+    assert_equal "black", game.playerturn
+  end
 end

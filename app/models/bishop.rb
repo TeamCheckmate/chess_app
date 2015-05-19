@@ -13,6 +13,10 @@ class Bishop < Piece
     valid_move
   end
 
+  def original_x_coord
+    [2, 5]
+  end
+
   private
   def valid_diagonal_move?(new_x, new_y)
     x_distance(new_x) == y_distance(new_y) && x_distance(new_x) != 0

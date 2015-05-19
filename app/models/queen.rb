@@ -20,6 +20,9 @@ class Queen < Piece
     valid_move
   end
 
+  def original_x_coord
+    [4]
+  end
 
   private
   def valid_vertical_move?(new_x, new_y)

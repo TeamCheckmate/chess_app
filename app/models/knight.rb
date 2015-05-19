@@ -20,6 +20,10 @@ class Knight < Piece
       end    
     valid_move
   end
+
+  def original_x_coord
+    [1, 6]
+  end
   
   private
 
