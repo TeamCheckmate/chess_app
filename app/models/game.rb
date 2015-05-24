@@ -53,6 +53,10 @@ class Game < ActiveRecord::Base
       end
   end
 
+  def not_white_player?(user)
+    user != white_player 
+  end
+
 
     
 ########################

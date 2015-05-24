@@ -11,13 +11,14 @@
 	</head>
 	<body>
 		<%= render "layouts/nav"%>
-
-		<% if notice.present? %>
-		  <p class="alert alert-info"><%= notice %></p>
-		<% end %>
-		<% if alert.present? %>
-		  <p class="alert alert-danger"><%= alert %></p>
-		<% end %>
+		<div class= "notice-alert col-xs-12 col-sm-6 col-sm-offset-3" >
+			<% if notice.present? %>
+			  <p class="alert alert-info"><%= notice %></p>
+			<% end %>
+			<% if alert.present? %>
+			  <p class="alert alert-danger"><%= alert %></p>
+			<% end %>
+		</div>
 
 		<br class="clear"/>
 

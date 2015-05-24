@@ -28,16 +28,19 @@ class GamesControllerTest < ActionController::TestCase
   	assert_redirected_to game_path(Game.last)
   end
 
-  test "update game - let user join game" do
+  test "join game" do
     user = FactoryGirl.create(:user)
-    game = FactoryGirl.create(:game)
-    sign_in user
+    user2= FactoryGirl.create(:user)
+    game = Game.create(:white_player => user)
+
+    sign_in user2
 
     assert_no_difference 'Game.count' do
-      put :update, {:id => game.id, :game => {:black_player_id => user.id}}
+      patch :join, :id => game.id
     end
-
-    assert_redirected_to game_path
+    puts game.inspect
+    assert_equal user2, game.reload.black_player
+    assert_redirected_to game_path(game)
   end
 
   
