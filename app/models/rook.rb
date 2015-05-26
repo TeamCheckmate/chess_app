@@ -8,12 +8,14 @@ class Rook < Piece
  
   def valid_moves
     valid_move =[]
+    return valid_move if x_coord == nil
+    
     (-7..7).each do |x|
-          coords = [x_coord, y_coord + x]
-          valid_move << coords
-          coords = [x_coord + x, y_coord]
-          valid_move << coords
-      end
+      coords = [x_coord, y_coord + x]
+      valid_move << coords
+      coords = [x_coord + x, y_coord]
+      valid_move << coords
+    end
     valid_move
   end
 

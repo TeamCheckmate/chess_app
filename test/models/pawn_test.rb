@@ -68,4 +68,5 @@ class PawnTest < ActiveSupport::TestCase
     assert_equal true, p_w.move_valid?(0,2)
   end
 
+
 end

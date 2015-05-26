@@ -27,17 +27,20 @@ class Pawn < Piece
   end
 
   def valid_moves
-      valid_move =[]
-      (-1..1).each do |x|
-        (-1..1).each do |y|
-          coords = [x_coord + x, y_coord + y]
-          valid_move << coords
-        end
+    valid_move =[]
+     
+    return valid_move if x_coord == nil
+
+    (-1..1).each do |x|
+      (-1..1).each do |y|
+        coords = [x_coord + x, y_coord + y]
+        valid_move << coords
       end
-      coords = [x_coord, y_coord + 2]
-      valid_move << coords
-      coords = [x_coord, y_coord - 2]
-      valid_move << coords
+    end
+    coords = [x_coord, y_coord + 2]
+    valid_move << coords
+    coords = [x_coord, y_coord - 2]
+    valid_move << coords
     valid_move
   end
 

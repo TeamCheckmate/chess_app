@@ -311,4 +311,22 @@ class GameTest < ActiveSupport::TestCase
     game.switch_turn
     assert_equal "black", game.playerturn
   end
+
+  test "valid moves" do
+    game = create_pieceless_game
+    w_k = create_piece([0,3], game, "King", "white") 
+    b_k = create_piece([3,7], game, "King", "black")
+    w_q = create_piece([3,3], game, "Queen", "white") 
+    b_p = create_piece([3,6], game, "Pawn", "black")
+    b_p2 = create_piece([4,6], game, "Pawn", "black")
+    b_k = create_piece([1,7], game, "Knight", "black")
+    b_k2 = create_piece([6,7], game, "Knight", "black")
+    w_k = create_piece([1,0], game, "Knight", "black")
+    w_k = create_piece([6,7], game, "Knight", "black")
+
+    
+    w_q.move_to!(3,6)
+    assert_equal true, game.in_check?("black")
+    w_q.move_to!(4,6)
+  end
 end

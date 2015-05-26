@@ -1,4 +1,5 @@
-function render_chess_board(game_id) {
+function render_chess_board() {
+  var game_id = $(".chess_board_partial").data('game-id');
   var url = "/games/" + game_id + "/render_chess_board"
 
   $.get(url, function(data) {
@@ -19,6 +20,30 @@ function draggable_droppable() {
   });
 }
 
+function trigger_pawn_promotion_modal(pawn_id) {
+  $("#pawn-promote-button").trigger("click");
+  piece_type_buttons_listner(pawn_id);
+  render_chess_board();
+}
+
+function piece_type_buttons_listner(pawn_id) { 
+  $(".promote").click(function() {
+    var piece_type = $(this).html();
+    var pawn_promote_url = '/pieces/' + pawn_id + '/change_piece_type/' + piece_type
+
+    $.ajax({
+      type: 'PATCH',
+      url: pawn_promote_url,
+      data: {},
+      dataType: 'json',
+      success: function(data) {
+
+        $('.close').trigger("click");
+        render_chess_board();
+      }
+    });
+  });
+}
 function handleDropEvent( event, ui ) {
   var game_id = $(".chess_board_partial").data('game-id');
   var x = $(event.target).data("x-coord");
@@ -32,30 +57,14 @@ function handleDropEvent( event, ui ) {
         type: 'PUT', 
         statusCode: {
           205: function() {
-            render_chess_board(game_id);
+            render_chess_board();
           },
           422: function() {
-            render_chess_board(game_id);   
+            render_chess_board();   
           },
           206: function(data){
             var pawn_id = data["pawn_id"];
-            $("#pawn-promote-button").trigger("click");
-            $(".promote").click(function() {
-              var piece_type = $(this).html();
-              var pawn_promote_url = '/pieces/' + pawn_id + '/change_piece_type/' + piece_type
-
-              $.ajax({
-                type: 'PATCH',
-                url: pawn_promote_url,
-                data: {},
-                dataType: 'json',
-                success: function(data) {
-         
-                  $('.close').trigger("click");
-                  render_chess_board(game_id);
-                }
-              });
-            });
+            trigger_pawn_promotion_modal(pawn_id);
           },
           204: function() {
             alert("Check Mate!");
@@ -76,23 +85,7 @@ function check_pawn_promtion() {
     statusCode: {
       206: function(data){
         var pawn_id = data["pawn_id"];
-        $("#pawn-promote-button").trigger("click");
-        $(".promote").click(function() {
-          var piece_type = $(this).html();
-          var pawn_promote_url = '/pieces/' + pawn_id + '/change_piece_type/' + piece_type
-
-          $.ajax({
-            type: 'PATCH',
-            url: pawn_promote_url,
-            data: {},
-            dataType: 'json',
-            success: function(data) {
-              console.log(data);
-              $('.close').trigger("click");
-              location.reload();
-            }
-          });
-        });
+        trigger_pawn_promotion_modal(pawn_id);
       }
     }
   });
@@ -101,8 +94,4 @@ function check_pawn_promtion() {
 $(document).ready(function() {
   check_pawn_promtion();
   draggable_droppable();
-});
-
-$(document).ajaxComplete(function () {
-  draggable_droppable();;
 });
