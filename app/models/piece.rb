@@ -10,7 +10,8 @@ class Piece < ActiveRecord::Base
   def create_move!
   #need to find game associated with piece  
     moved_piece = self.game.pieces.order("updated_at").last 
-    Move.create :game_id => moved_piece.game.id, :piece_id => moved_piece.id, :x_coord => moved_piece.x_coord, :y_coord => moved_piece.y_coord
+    Move.create(:game_id => moved_piece.game.id, :piece_id => moved_piece.id, :x_coord => moved_piece.x_coord, :y_coord => moved_piece.y_coord)
+    self.game.switch_turn
   end
 
   def self.piece_types
@@ -41,11 +42,10 @@ class Piece < ActiveRecord::Base
     # need en passant
     destn_piece = self.game.square_occupied(new_x, new_y).first
     prev_move = self.game.pieces.where(:x_coord => self.x_coord, :y_coord => self.y_coord, :color => self.color).first
-    unless destn_piece.nil?
-      destn_piece.update_attributes(:x_coord => nil, :y_coord => nil)
-    end
 
-    if self.piece_type == "King" && self.game.castle?(new_x, self.color)
+    capture_if_square_not_empty(destn_piece)
+
+    if what_type?("King") && self.game.castle?(new_x, self.color)
       if new_x > self.x_coord 
         rook = self.game.pieces.where(:x_coord => 7, :y_coord => self.y_coord).first
         rook.update_attributes(:x_coord => new_x - 1)
@@ -58,12 +58,13 @@ class Piece < ActiveRecord::Base
 
       self.update(:x_coord => new_x, :y_coord => new_y)
       return :castle
-    elsif self.piece_type == "Pawn" && self.en_passant?(new_x, new_y)
+    elsif what_type?("Pawn") && self.en_passant?(new_x, new_y)
       if self.color == "white"
         operation = -1
       else
         operation = 1
       end
+      
       check_y = new_y + operation
       behind_piece = self.game.square_occupied(new_x, check_y).first
       behind_piece.update_attributes(:x_coord => nil, :y_coord => nil)
@@ -82,7 +83,7 @@ class Piece < ActiveRecord::Base
       end
       self.update_attributes(:x_coord => old_x, :y_coord => old_y)
       return :invalid_move
-    elsif self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7
+    elsif pawn_promotion?
       self.create_move!
       return :pawn_promote
     elsif destn_piece.nil?
@@ -95,11 +96,66 @@ class Piece < ActiveRecord::Base
   end
 
   def pawn_promotion?
-    self.piece_type == "Pawn" && self.y_coord == 0 || self.y_coord == 7
-  end   
+    what_type?("Pawn") && (self.y_coord == 0 || self.y_coord == 7)
+  end
 
+  def original_y_coord
+    case self.color 
+    when "white"
+      0
+    when "black"
+      7
+    end
+  end
 
+  def threefold_repetition?(new_x, new_y)
+    all_moves = self.moves.all.to_ary
+    
+    moves_count = all_moves.count
 
+    if moves_count > 1
+      if equal_to_n_last_move?(2, all_moves, new_x, new_y)
+        if moves_count > 3 
+          return true if equal_to_n_last_move?(4, all_moves, new_x, new_y)
+        elsif equal_to_original_moves?(new_x, new_y)
+          return true
+        else 
+          puts "yes"
+          return false
+        end
+      else
+        return false
+      end
+    end
+    
+    false
+  end
 end
+
+private
+
+def what_type?(type)
+  self.piece_type == type
+end
+
+def capture_if_square_not_empty(destn_piece)
+    unless destn_piece.nil?
+      destn_piece.update_attributes(:x_coord => nil, :y_coord => nil)
+    end
+end
+
+def equal_to_original_moves?(new_x, new_y)
+  self.original_x_coord.include?(new_x) && self.original_y_coord == new_y
+end
+
+def equal_to_n_last_move?(n, all_moves, new_x, new_y)
+  moves_count = all_moves.count
+  n_last_move_x_coord = all_moves[moves_count-n].x_coord
+  n_last_move_y_coord = all_moves[moves_count-n].y_coord
+
+  n_last_move_x_coord == new_x && n_last_move_y_coord == new_y
+end
+
+
 
 

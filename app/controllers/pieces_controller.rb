@@ -13,8 +13,21 @@ class PiecesController < ApplicationController
   end
 
   def update
-    @game_id = piece.game_id
-    game = Game.where(id: @game_id).first
+    game = piece.game
+
+    # if not_player_turn?
+    #  flash[:alert] = "It's not your turn yet!"
+    #  render "games/show"
+    #  return
+    # elsif picked_wrong_piece_color?
+    #   flash[:alert] = "Move your pieces only!"
+    #   render "games/show"
+    #   return
+    # end
+
+    if moved?(new_x, new_y)
+      render :nothing => true
+    end
 
     if piece.move_valid?(new_x, new_y)
       status_code = piece.move_to!(new_x, new_y)
@@ -36,11 +49,14 @@ class PiecesController < ApplicationController
       elsif status_code == :castle
         render :json => {:message => "castled"}, :status => :reset_content
       else
+        flash[:error] = "Invalid move!"
         render :json => {:message => "Invalid move"}, :status => :unprocessable_entity        
       end
     else
       render :json => {:message => "Invalid move"}, :status => :unprocessable_entity
     end
+
+
   end
 
   def change_piece_type
@@ -56,18 +72,21 @@ class PiecesController < ApplicationController
 
 
   def destroy
-    @game = @piece.game_id
-    @piece.destroy
+    piece.destroy
     render :nothing => true
   end
 
   private
   def piece
-    @piece = Piece.find(params[:id]) 
+    @piece ||= Piece.find(params[:id]) 
   end
 
   def piece_params
     params.require(:piece).permit(:x_coord, :y_coord, :game_id, :piece_type)
+  end
+
+  def moved?(x, y)
+    @piece.x_coord == x && @piece.y_coord == y
   end
 
   def new_x 
@@ -77,6 +96,22 @@ class PiecesController < ApplicationController
 
   def new_y
     piece_params[:y_coord].to_i
+  end
+
+  def picked_wrong_piece_color?
+    piece.game.playerturn != piece.color
+  end
+
+  def not_player_turn?
+    piece.game.playerturn != player_color
+  end
+
+  def player_color
+    if current_user == piece.game.white_player
+      "white"
+    else
+      "black"
+    end
   end
 
   def get_image_name(piece_color, piece_type)

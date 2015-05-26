@@ -273,7 +273,6 @@ class GameTest < ActiveSupport::TestCase
     p3 = create_piece([3,7], game, "King", "black")
 
    assert_equal false, game.castle?(5, "white")
-
   end
 
   test "white cannot castle in check" do
@@ -283,11 +282,10 @@ class GameTest < ActiveSupport::TestCase
     p3 = create_piece([3,7], game, "King", "black")
     p4 = create_piece([2,5], game, "Rook", "black")
 
-   assert_equal false, game.castle?(1, "white")
-
+    assert_equal false, game.castle?(1, "white")
   end
 
-   test "white cannot castle" do
+  test "white cannot castle" do
     game = create_pieceless_game
     p1 = create_piece([3,0], game, "King", "white")
     p2 = create_piece([0,0], game, "Rook", "white")
@@ -295,22 +293,40 @@ class GameTest < ActiveSupport::TestCase
     p4 = create_piece([2,0], game, "Knight", "white")
 
    assert_equal false, game.castle?(1, "white")
-
   end
 
-  
-   test "black stalemate" do
+  test "black stalemate" do
     game = create_pieceless_game
     p1 = create_piece([7,0], game, "King", "white")
     p2 = create_piece([1,3], game, "Rook", "white")
     p3 = create_piece([0,0], game, "King", "black")
     p4 = create_piece([3,1], game, "Rook", "white")
 
-   assert_equal false, game.not_stalemate?("black")
-
+    assert_equal false, game.not_stalemate?("black")
   end
 
+  test "game switch turn" do
+    game = create_pieceless_game
+    assert_equal "white", game.playerturn
+    game.switch_turn
+    assert_equal "black", game.playerturn
+  end
 
+  test "valid moves" do
+    game = create_pieceless_game
+    w_k = create_piece([0,3], game, "King", "white") 
+    b_k = create_piece([3,7], game, "King", "black")
+    w_q = create_piece([3,3], game, "Queen", "white") 
+    b_p = create_piece([3,6], game, "Pawn", "black")
+    b_p2 = create_piece([4,6], game, "Pawn", "black")
+    b_k = create_piece([1,7], game, "Knight", "black")
+    b_k2 = create_piece([6,7], game, "Knight", "black")
+    w_k = create_piece([1,0], game, "Knight", "black")
+    w_k = create_piece([6,7], game, "Knight", "black")
 
-
+    
+    w_q.move_to!(3,6)
+    assert_equal true, game.in_check?("black")
+    w_q.move_to!(4,6)
+  end
 end

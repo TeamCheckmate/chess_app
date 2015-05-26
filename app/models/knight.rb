@@ -7,18 +7,26 @@ class Knight < Piece
   end
 
   def valid_moves
-      valid_move =[]
-      move_two = [-2, 2]
-      move_one = [-1, 1]
-      move_two.each do |two|
-        move_one.each do |one|
-          coords = [x_coord + two, y_coord + one]
-          valid_move << coords
-          coords = [x_coord + one, y_coord + two]
-          valid_move << coords
-        end 
-      end    
+    valid_move =[]
+    return valid_move if x_coord == nil
+
+    move_two = [-2, 2]
+    move_one = [-1, 1]
+
+    move_two.each do |two|
+      move_one.each do |one|  
+        coords = [x_coord + two, y_coord + one]
+        valid_move << coords
+        coords = [x_coord + one, y_coord + two]
+        valid_move << coords
+      end 
+    end   
+     
     valid_move
+  end
+
+  def original_x_coord
+    [1, 6]
   end
   
   private

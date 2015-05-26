@@ -2,7 +2,7 @@ class Game < ActiveRecord::Base
   belongs_to :white_player, class_name: "User"
   belongs_to :black_player, class_name: "User"
   has_many   :pieces
-  has_many :moves, through: :pieces
+  has_many :moves
   after_create :populate_the_pieces!
   require 'pry'
 
@@ -52,6 +52,11 @@ class Game < ActiveRecord::Base
         self.pieces.create(piece)
       end
   end
+
+  def not_white_player?(user)
+    user != white_player 
+  end
+
 
     
 ########################
@@ -121,6 +126,10 @@ class Game < ActiveRecord::Base
     return false
   end
 
+  def draw
+
+  end
+
   def not_stalemate?(color)
     pieces = self.pieces.where(:color => color)
     pieces.each do |piece|
@@ -143,7 +152,8 @@ class Game < ActiveRecord::Base
     return false
   end
 
-   def castle?(new_x, color)
+
+  def castle?(new_x, color)
     #no pieces between rook and king
     #rook and king must be in original positions
     castle_king = self.pieces.where(:piece_type => "King", :color => color).first
@@ -155,32 +165,34 @@ class Game < ActiveRecord::Base
       castle_rook = self.pieces.where(:piece_type => "Rook", :color => color, :x_coord => 0).first
       operation = :-
     end
-      if !castle_rook.present?
-        return false
-      elsif castle_king.moves.empty? && castle_rook.moves.empty?
-        return false if self.in_check?(castle_king.color)
-        old_x = castle_king.x_coord
-        new_x = old_x
-          2.times do |x|
-            new_x = new_x.send(operation, 1)
-            if self.pieces.where(:x_coord => new_x, :y_coord => castle_king.y_coord).first.nil?
-              move_square = true
-            else
-              move_square = false
-            end
-            castle_king.update_attributes(x_coord: new_x)
-            if self.in_check?(castle_king.color) || !move_square
-              castle_king.update_attributes(x_coord: old_x)
-              return false
-            end
-          end
-          castle_king.update_attributes(x_coord: old_x)
-        return true
-      else
-        return false
-      end
-  end
 
+    if !castle_rook.present?
+      return false
+    elsif castle_king.moves.empty? && castle_rook.moves.empty?
+      return false if self.in_check?(castle_king.color)
+      old_x = castle_king.x_coord
+      new_x = old_x
+
+      2.times do |x|
+        new_x = new_x.send(operation, 1)
+        if self.pieces.where(:x_coord => new_x, :y_coord => castle_king.y_coord).first.nil?
+          move_square = true
+        else
+          move_square = false
+        end
+        castle_king.update_attributes(x_coord: new_x)
+        if self.in_check?(castle_king.color) || !move_square
+          castle_king.update_attributes(x_coord: old_x)
+          return false
+        end
+      end
+
+      castle_king.update_attributes(x_coord: old_x)
+      return true
+    else
+      return false
+    end
+  end
 
   def check_mate?
     # check for check
@@ -279,6 +291,7 @@ class Game < ActiveRecord::Base
       # try and take the piece
       attack_x = check_piece.x_coord
       attack_y = check_piece.y_coord
+      
       defend_pieces.each do |piece|
         if !piece.x_coord.nil? && piece.move_valid?(attack_x, attack_y)
           old_x = piece.x_coord
@@ -298,6 +311,15 @@ class Game < ActiveRecord::Base
     end
 
     true
+  end
+
+  def switch_turn
+    case playerturn
+    when "white"
+      self.update_attributes(:playerturn => "black" )
+    when "black"
+      self.update_attributes(:playerturn => "white" )
+    end
   end
 
   private

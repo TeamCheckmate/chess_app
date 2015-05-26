@@ -1,5 +1,6 @@
 class GamesController < ApplicationController
 	before_action :authenticate_user!
+	before_action :current_game, :only => [:show, :check_pawn_promotion, :join, :render_chess_board]
 	protect_from_forgery
   	skip_before_filter  :verify_authenticity_token
 	def new
@@ -12,12 +13,10 @@ class GamesController < ApplicationController
 	end
 	
 	def show 
-		@game = Game.find(params[:id])
 		@pieces = @game.pieces
 	end
 
 	def check_pawn_promotion
-		@game = Game.find(params[:id])
 		pawns = @game.pieces.where(:piece_type => 'Pawn')
 
 		if !pawns.empty?
@@ -40,13 +39,27 @@ class GamesController < ApplicationController
 
 	end
 
-	def update
-		@game = Game.find(params[:id])
-		@game.update_attributes(:black_player_id => current_user.id)
-		redirect_to game_path(@game)
+	def join
+		if @game.not_white_player?(current_user)
+			@game.update_attributes(:black_player => current_user )
+		end
+		redirect_to game_path(@game), action: 'get'
+	end
+
+	def render_chess_board
+		render :json => {
+			:html => render_to_string( {
+				:partial => "chess_board",
+				:locals => { game: current_game }
+			})
+
+		}	
 	end
 
 	private
+	def current_game
+		@game ||= Game.find(params[:id])
+	end
 
 	def game_params
 		params[:game][:white_player_id] = current_user.id

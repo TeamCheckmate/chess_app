@@ -5,12 +5,19 @@ class Bishop < Piece
   end
 
   def valid_moves
-      valid_move =[]
-      (-7..7).each do |x|
-          coords = [x_coord + x, y_coord + x]
-          valid_move << coords
-      end
+    valid_move =[]
+    return valid_move if x_coord == nil
+
+    (-7..7).each do |x|    
+      coords = [x_coord + x, y_coord + x]
+      valid_move << coords
+    end
+    
     valid_move
+  end
+
+  def original_x_coord
+    [2, 5]
   end
 
   private

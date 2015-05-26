@@ -10,7 +10,7 @@ class King < Piece
 		valid_diagonal_move?(new_x, new_y)
 	end
 
-		def king_castle?(new_x, new_y)
+	def king_castle?(new_x, new_y)
 		if self.game.castle?(new_x, self.color)
 			if x_within_two?(new_x) && same_y?(new_y)
 				return true
@@ -22,14 +22,19 @@ class King < Piece
 	end
 
 	def valid_moves
-			valid_move =[]
-			(-1..1).each do |x|
-				(-1..1).each do |y|
-					coords = [x_coord + x, y_coord + y]
-					valid_move << coords
-				end
+		valid_move =[]
+		return valid_move if x_coord == nil
+		(-1..1).each do |x|
+			(-1..1).each do |y|
+				coords = [x_coord + x, y_coord + y]
+				valid_move << coords
 			end
+		end
 		valid_move
+	end
+
+	def original_x_coord
+		[3]
 	end
 
 	private 
@@ -65,5 +70,4 @@ class King < Piece
 	def x_within_two?(new_x)
 		(new_x - x_coord).abs == 2
 	end
-
 end

@@ -31,3 +31,7 @@ def create_piece(coord, game, type=nil, color=nil)
   piece = Piece.create!(x_coord: coord[0], y_coord: coord[1], piece_type: type, game: game, color: color)
   piece 
 end
+
+def move_piece(piece, x, y)
+  put :update, :id => piece.id, :piece => {:x_coord => piece.reload.x_coord + x, :y_coord => piece.reload.y_coord + y}
+end
