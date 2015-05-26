@@ -30,7 +30,7 @@ class GamesController < ApplicationController
 			if pawn_id == -1
 				render :nothing
 			else
-				render :json => {:pawn_id => pawn_id, :message => "pawn promoted"}, :status => :partial_content
+				render :json => {:pawn_id => pawn_id }
 			end
 		else
 			render :nothing
@@ -42,17 +42,20 @@ class GamesController < ApplicationController
 	def join
 		if @game.not_white_player?(current_user)
 			@game.update_attributes(:black_player => current_user )
-		end
-		redirect_to game_path(@game), action: 'get'
+			flash[:notice] = "You joined the game: #{@game.title}"
+			redirect_to game_path(@game), action: 'get'
+		else
+			flash[:alert] = "Cannot join the game, you are already in this game."
+			redirect_to root_path
+		end		
 	end
 
 	def render_chess_board
 		render :json => {
-			:html => render_to_string( {
+				:chess_board => render_to_string( {
 				:partial => "chess_board",
 				:locals => { game: current_game }
-			})
-
+				})
 		}	
 	end
 

@@ -15,17 +15,18 @@ class PiecesController < ApplicationController
   def update
     game = piece.game
 
-    # if not_player_turn?
-    #  flash[:alert] = "It's not your turn yet!"
-    #  render "games/show"
-    #  return
-    # elsif picked_wrong_piece_color?
-    #   flash[:alert] = "Move your pieces only!"
-    #   render "games/show"
-    #   return
-    # end
+    if !game.black_player.nil? && not_player_turn?
+      flash[:alert] = "It's not your turn yet!"
+      return render_notifications
+    elsif !game.black_player.nil? && picked_wrong_piece_color? 
+      flash[:alert] = "Move your pieces only!"
+      return render_notifications
+    end
 
-    if moved?(new_x, new_y)
+    old_x = piece.x_coord
+    old_y = piece.y_coord
+
+    if not_moved?(new_x, new_y)
       render :nothing => true
     end
 
@@ -37,37 +38,39 @@ class PiecesController < ApplicationController
         opp_color = "white"
       end
       if !game.not_stalemate?(opp_color)
-        render :json => {:message => "stalemate"}, :status => :created
+        flash[:alert] = "Stalemate!"
+        flash[:notice] = "Game ends as a draw!"
       elsif game.check_mate?
-       render :json => {:message => "check mate"}, :status => :no_content
+        flash[:alert] = "Checkmate!"
+        flash[:notice] = "The game ended!"
       elsif status_code == :valid_move
-        render :nothing => true
+        flash[:alert] = "#{piece.piece_type}: Valid Move!"
       elsif status_code == :reload
-        render :json => {:message => "piece taken"}, :status => :reset_content
+        flash[:alert] = "Piece Taken!"
       elsif status_code == :pawn_promote
-        render :json => {:pawn_id => piece.id, :message => "pawn promoted"}, :status => :partial_content
+        return render :json => {:pawn_id => piece.id, :message => "pawn promoted"}, :status => :partial_content
       elsif status_code == :castle
-        render :json => {:message => "castled"}, :status => :reset_content
+        flash[:alert] = "Castled!"
       else
-        flash[:error] = "Invalid move!"
-        render :json => {:message => "Invalid move"}, :status => :unprocessable_entity        
+        flash[:alert] = "#{piece.piece_type}: Invalid move!"
       end
     else
-      render :json => {:message => "Invalid move"}, :status => :unprocessable_entity
+      flash[:alert] = "#{piece.piece_type}: Invalid move!"
     end
 
-
+    render_notifications
   end
 
   def change_piece_type
     @piece = Piece.find(params[:piece_id])
     promote_piece_type = params[:piece_type]
     piece_color = @piece.color
-
+    old_piece_type = @piece.piece_type
     promote_piece_image = get_image_name(piece_color, promote_piece_type)
     @piece.update_attributes(:piece_type => promote_piece_type, :image_name => promote_piece_image)
     
-    render :json => {:message => 'updated piece type'}
+    flash[:alert] = "#{old_piece_type} is promoted to #{promote_piece_type}"
+    render_notifications
   end
 
 
@@ -85,7 +88,7 @@ class PiecesController < ApplicationController
     params.require(:piece).permit(:x_coord, :y_coord, :game_id, :piece_type)
   end
 
-  def moved?(x, y)
+  def not_moved?(x, y)
     @piece.x_coord == x && @piece.y_coord == y
   end
 
@@ -134,5 +137,13 @@ class PiecesController < ApplicationController
     end
 
     image_name = 'pieces/'+ piece_color + piece_type + '.png'
+  end
+
+  def render_notifications
+    render :json => {
+          :notifications => render_to_string({
+          :partial => "layouts/notice_alert"
+        })
+    }
   end   
 end
