@@ -4,10 +4,10 @@ function render_chess_board() {
 
   $.get(url, function(data) {
     $(".chess_board_partial").empty();
-    $(".chess_board_partial").append(data.html);
+    $(".chess_board_partial").append(data.chess_board);
   }).done(function() {
     draggable_droppable();
-  });
+  })
 }
 
 function draggable_droppable() {
@@ -37,8 +37,8 @@ function piece_type_buttons_listner(pawn_id) {
       data: {},
       dataType: 'json',
       success: function(data) {
-
         $('.close').trigger("click");
+        $(".notice-alert").empty().append(data.notifications);
         render_chess_board();
       }
     });
@@ -56,23 +56,18 @@ function handleDropEvent( event, ui ) {
   $.ajax({
         type: 'PUT', 
         statusCode: {
-          205: function() {
-            render_chess_board();
-          },
-          422: function() {
-            render_chess_board();   
-          },
           206: function(data){
             var pawn_id = data["pawn_id"];
             trigger_pawn_promotion_modal(pawn_id);
-          },
-          204: function() {
-            alert("Check Mate!");
           }
         },
         url: draggable.data('update-url'),
         dataType: 'json',
-        data: { piece: {x_coord: x, y_coord: y}}
+        data: { piece: {x_coord: x, y_coord: y}}, 
+        success: function (data) {
+          render_chess_board();
+          $(".notice-alert").empty().append(data.notifications);
+        }  
   });
 }
 
@@ -82,12 +77,10 @@ function check_pawn_promtion() {
     type: 'PATCH',
     url: check_pawn_promotion_url,
     dataType: 'json',
-    statusCode: {
-      206: function(data){
-        var pawn_id = data["pawn_id"];
+    success : function(data){
+        var pawn_id = data.pawn_id;
         trigger_pawn_promotion_modal(pawn_id);
       }
-    }
   });
 }
 

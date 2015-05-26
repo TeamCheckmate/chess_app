@@ -120,7 +120,6 @@ class Piece < ActiveRecord::Base
         elsif equal_to_original_moves?(new_x, new_y)
           return true
         else 
-          puts "yes"
           return false
         end
       else

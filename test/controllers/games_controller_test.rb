@@ -38,7 +38,6 @@ class GamesControllerTest < ActionController::TestCase
     assert_no_difference 'Game.count' do
       patch :join, :id => game.id
     end
-    puts game.inspect
     assert_equal user2, game.reload.black_player
     assert_redirected_to game_path(game)
   end

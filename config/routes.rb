@@ -7,6 +7,7 @@ Rails.application.routes.draw do
 
   resources :games, :only => [:new, :create, :show, :update ]
   patch "games/:id/join" => 'games#join', :as => 'game_join'
+  patch "welcome/quick_play" => 'welcome#quick_play', :as => 'welcome_quick_play'
 
   get "games/:id/render_chess_board" => 'games#render_chess_board', :as => "game_render_chess_board"
 

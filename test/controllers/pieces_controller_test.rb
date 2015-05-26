@@ -46,9 +46,8 @@ class PiecesControllerTest < ActionController::TestCase
     piece4 = game.pieces.create(:x_coord => 0, :y_coord => 0, :piece_type => 'King', :color => "black")
     piece5 = game.pieces.create(:x_coord => 7, :y_coord => 7, :piece_type => 'King', :color => "white")
     put :update, id: piece.id, :piece => {x_coord: 3, y_coord: 2}
-    assert_response :unprocessable_entity
+    assert_equal "#{piece.piece_type}: Invalid move!", flash[:alert] 
     response = ActiveSupport::JSON.decode @response.body
-    assert response["message"].present?
   end
 
   test "capture_method" do
