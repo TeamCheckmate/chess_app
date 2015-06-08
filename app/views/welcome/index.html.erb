@@ -1,69 +1,72 @@
+<div class="hero col-xs-12 col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4">
+  <h1>Welcome to Chess</h1>
+  <div>
+    <p>Would you like to play a game?</p>
+    <% if current_user %>
+      <br />   
+        <%= link_to "Create a Game", "#", :class => "btn btn-success btn-lg col-xs-12 col-sm-8 col-sm-offset-2", :data => {:toggle => "modal", :target => "#newGameModal"} %>
+        <br class="clear" />
+        <br /> 
+        <%= link_to "Quick Play", welcome_quick_play_path, method: :patch, :class => "btn btn-info btn-lg col-xs-12 col-sm-8 col-sm-offset-2" %>
+    <% else %>
+      <%= link_to "Sign Up", new_user_registration_path, :class => "btn btn-warning btn-lg col-xs-12 col-sm-10 col-sm-offset-1"%>
+      <br class="clear"/>
+      <br />
+    <% end %>
+  </div>
+</div>
+<br class="clear" />
+<br />
+<br />
 
-  <div class="hero col-xs-12 col-sm-4 col-sm-offset-4 col-md-4 col-md-offset-4">
-    <h1>Welcome to Chess</h1>
-    <div>
-      <p>Would you like to play a game?</p>
-      <% if current_user %>
-        <br />   
-          <%= link_to "Create a Game", "#", :class => "btn btn-success btn-lg col-xs-12 col-sm-8 col-sm-offset-2", :data => {:toggle => "modal", :target => "#newGameModal"} %>
-          <br class="clear" />
-          <br /> 
-          <%= link_to "Quick Play", welcome_quick_play_path, method: :patch, :class => "btn btn-info btn-lg col-xs-12 col-sm-8 col-sm-offset-2" %>
-      <% else %>
-        <%= link_to "Sign Up", new_user_registration_path, :class => "btn btn-warning btn-lg col-xs-12 col-sm-10 col-sm-offset-1"%>
-        <br class="clear"/>
-        <br />
+<div class="booyah-box col-xs-12 col-sm-8 col-sm-offset-2">
+  <% if current_user && !@recent_game.nil? %>
+    <h4 class="text-center">Go to recent game: <%= link_to @recent_game.title, game_path(@recent_game), method: :get %></h4>
+  <% end %>
+  <br />
+  <br />
+  <h2 class="text-center">Open Tournaments</h2>
+  <hr />
+
+  <% if !@available_games.present? %>
+    <%= "There are currently no open tournaments. Please check back later." %>
+  <% else %>
+  <ul>
+  <% @available_games.each do |game| %>
+      <li>
+        <%= link_to "JOIN", game_join_path(game), method: :patch, :class => "btn btn-sm btn-danger pull-right"%>
+        <h4><%= game.title %><h4>
+        White Player: <%= game.white_player.email %>
+      </li> 
+      <br />  
+  <% end %>
+  </ul>
+  <% end %>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="newGameModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="newGameModalLabel">Create a Game</h4>
+      </div>
+
+      <%= form_for @game, url: games_path, method: :post, :html => {:id => 'newGameForm'} do |f| %>
+        <div class="modal-body">
+        <%= f.text_field :title %>     
+        </div>
+
+      <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <%= f.submit "Create", :class => "btn btn-primary" %>
+      </div>
       <% end %>
     </div>
   </div>
-  <br class="clear" />
-  <br />
-  <br />
+</div>
 
-  <div class="booyah-box col-xs-12 col-sm-8 col-sm-offset-2">
-    <% if current_user && !@recent_game.nil? %>
-      <h4 class="text-center">Go to recent game: <%= link_to @recent_game.title, game_path(@recent_game), method: :get %></h4>
-    <% end %>
-    <br />
-    <br />
-    <h2 class="text-center">Open Tournaments</h2>
-    <hr />
-
-    <% if !@available_games.present? %>
-      <%= "There are currently no open tournaments. Please check back later." %>
-    <% else %>
-    <ul>
-    <% @available_games.each do |game| %>
-        <li>
-          <%= link_to "JOIN", game_join_path(game), method: :patch, :class => "btn btn-sm btn-danger pull-right"%>
-          <h4><%= game.title %><h4>
-          White Player: <%= game.white_player.email %>
-        </li> 
-        <br />  
-    <% end %>
-    </ul>
-    <% end %>
-  </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="newGameModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="newGameModalLabel">Create a Game</h4>
-        </div>
-
-        <%= form_for @game, url: games_path, method: :post, :html => {:id => 'newGameForm'} do |f| %>
-          <div class="modal-body">
-          <%= f.text_field :title %>     
-          </div>
-
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <%= f.submit "Create", :class => "btn btn-primary" %>
-        </div>
-        <% end %>
-      </div>
-    </div>
-  </div>
+<script>
+  window.stop();
+</script>

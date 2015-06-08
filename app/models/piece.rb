@@ -2,6 +2,7 @@ class Piece < ActiveRecord::Base
   belongs_to :game
   belongs_to :user
   has_many :moves
+  has_many :positions
   self.inheritance_column = :piece_type
   require 'pry'
 
@@ -12,6 +13,11 @@ class Piece < ActiveRecord::Base
     moved_piece = self.game.pieces.order("updated_at").last 
     Move.create(:game_id => moved_piece.game.id, :piece_id => moved_piece.id, :x_coord => moved_piece.x_coord, :y_coord => moved_piece.y_coord)
     self.game.switch_turn
+    pos = self.game.positions.last
+    turn = pos.turn 
+    self.game.pieces.each do |piece|
+      Position.create(:game_id => piece.game.id, :x_coord => piece.x_coord, :y_coord => piece.y_coord, :turn => turn + 1, :piece_id => piece.id)
+    end
   end
 
   def self.piece_types

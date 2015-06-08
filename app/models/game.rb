@@ -1,8 +1,9 @@
 class Game < ActiveRecord::Base
   belongs_to :white_player, class_name: "User"
   belongs_to :black_player, class_name: "User"
-  has_many   :pieces
+  has_many  :pieces
   has_many :moves
+  has_many :positions
   after_create :populate_the_pieces!
   require 'pry'
 
@@ -48,9 +49,10 @@ class Game < ActiveRecord::Base
     {:y_coord => 0, :x_coord => 7, :piece_type => "Rook", :color => 'white', :image_name => 'pieces/wr.png'},
   ]
   def populate_the_pieces!
-      INITIAL_PIECE_LOCATIONS.each do |piece|
-        self.pieces.create(piece)
-      end
+    INITIAL_PIECE_LOCATIONS.each do |piece|
+      p = self.pieces.create(piece)
+      self.positions.create(:x_coord => p.x_coord, :y_coord => p.y_coord, :game_id => self.id, :piece_id => p.id, :turn => 0)
+    end
   end
 
   def not_white_player?(user)

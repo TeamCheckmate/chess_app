@@ -308,4 +308,11 @@ test "white en passant" do
 
     assert_equal true, w_q.threefold_repetition?(4,0)
   end
+
+  test "create positions" do 
+    game = FactoryGirl.create(:game)
+    p = game.pieces.where(:x_coord => 4, :y_coord => 1).first
+    p.move_to!(4,2)
+    assert_equal 64, game.positions.count
+  end
 end

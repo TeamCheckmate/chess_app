@@ -329,4 +329,10 @@ class GameTest < ActiveSupport::TestCase
     assert_equal true, game.in_check?("black")
     w_q.move_to!(4,6)
   end
+
+  test "create positions" do
+    game = FactoryGirl.create(:game)
+
+    assert_equal 32, game.positions.count
+  end
 end

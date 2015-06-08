@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   get "games/:id/render_chess_board" => 'games#render_chess_board', :as => "game_render_chess_board"
 
-  resources :welcome, :only => [:index, :about]
+  resources :welcome, :only => [:index, :about, :update] 
   resources :pieces, :only => [:show, :update, :destroy, :edit] do 
   	patch "change_piece_type/:piece_type", :to => "pieces#change_piece_type"
   end
