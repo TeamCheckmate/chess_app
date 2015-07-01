@@ -14,9 +14,16 @@ class Piece < ActiveRecord::Base
     Move.create(:game_id => moved_piece.game.id, :piece_id => moved_piece.id, :x_coord => moved_piece.x_coord, :y_coord => moved_piece.y_coord)
     self.game.switch_turn
     pos = self.game.positions.last
-    turn = pos.turn 
+    turn = pos.turn_number
+
     self.game.pieces.each do |piece|
-      Position.create(:game_id => piece.game.id, :x_coord => piece.x_coord, :y_coord => piece.y_coord, :turn => turn + 1, :piece_id => piece.id)
+      piece_id = piece.id.to_s
+      new_hash = {}
+      new_hash[:piece_id] = piece.id
+
+      new_hash = { :x_coord => piece.x_coord, :y_coord => piece.y_coord, :piece_type => piece.piece_type}
+      
+      Position.create(piece_data: new_hash[:piece_id], turn_number: turn + 1)
     end
   end
 

@@ -51,7 +51,10 @@ class Game < ActiveRecord::Base
   def populate_the_pieces!
     INITIAL_PIECE_LOCATIONS.each do |piece|
       p = self.pieces.create(piece)
-      self.positions.create(:x_coord => p.x_coord, :y_coord => p.y_coord, :game_id => self.id, :piece_id => p.id, :turn => 0)
+      p_id = p.id
+      new_hash = {}
+      new_hash[:p_id] = [p.x_coord, p.y_coord, p.piece_type]
+      self.positions.create(piece_data: new_hash[:p_id], :turn_number => 0)
     end
   end
 

@@ -11,19 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150608012058) do
+ActiveRecord::Schema.define(version: 20150610001940) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "hstore"
 
   create_table "games", force: true do |t|
     t.integer  "white_player_id"
     t.integer  "black_player_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "title"
     t.string   "turn"
     t.string   "playerturn",      default: "white"
+    t.string   "title"
   end
 
   create_table "moves", force: true do |t|
@@ -53,17 +54,14 @@ ActiveRecord::Schema.define(version: 20150608012058) do
   add_index "pieces", ["game_id"], name: "index_pieces_on_game_id", using: :btree
 
   create_table "positions", force: true do |t|
-    t.integer  "x_coord"
-    t.integer  "y_coord"
-    t.integer  "piece_id"
     t.integer  "game_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "turn"
+    t.integer  "turn_number"
+    t.hstore   "piece_data"
   end
 
   add_index "positions", ["game_id"], name: "index_positions_on_game_id", using: :btree
-  add_index "positions", ["piece_id"], name: "index_positions_on_piece_id", using: :btree
 
   create_table "users", force: true do |t|
     t.string   "email",                  default: "", null: false

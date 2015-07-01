@@ -140,10 +140,7 @@ class PiecesController < ApplicationController
   end
 
   def render_notifications
-    render :json => {
-          :notifications => render_to_string({
-          :partial => "layouts/notice_alert"
-        })
-    }
-  end   
+    render  :partial => "layouts/notice_alert"
+  end
+     
 end

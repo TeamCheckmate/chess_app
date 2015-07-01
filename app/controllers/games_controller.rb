@@ -51,12 +51,8 @@ class GamesController < ApplicationController
 	end
 
 	def render_chess_board
-		render :json => {
-				:chess_board => render_to_string( {
-				:partial => "chess_board",
+		render :partial => "chess_board",
 				:locals => { game: current_game }
-				})
-		}	
 	end
 
 	private

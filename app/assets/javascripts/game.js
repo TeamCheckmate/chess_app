@@ -3,8 +3,7 @@ function render_chess_board() {
   var url = "/games/" + game_id + "/render_chess_board"
 
   $.get(url, function(data) {
-    $(".chess_board_partial").empty();
-    $(".chess_board_partial").append(data.chess_board);
+    $(".chess_board_partial").html(data);
   }).done(function() {
     draggable_droppable();
   })
@@ -38,7 +37,7 @@ function piece_type_buttons_listner(pawn_id) {
       dataType: 'json',
       success: function(data) {
         $('.close').trigger("click");
-        $(".notice-alert").empty().append(data.notifications);
+        $(".notice-alert").html(data);
         render_chess_board();
       }
     });
@@ -54,20 +53,20 @@ function handleDropEvent( event, ui ) {
   $(this).append(draggable.css('position','static'))
 
   $.ajax({
-        type: 'PUT', 
-        statusCode: {
-          206: function(data){
-            var pawn_id = data["pawn_id"];
-            trigger_pawn_promotion_modal(pawn_id);
-          }
-        },
-        url: draggable.data('update-url'),
-        dataType: 'json',
-        data: { piece: {x_coord: x, y_coord: y}}, 
-        success: function (data) {
-          render_chess_board();
-          $(".notice-alert").empty().append(data.notifications);
-        }  
+      type: 'PUT', 
+      statusCode: {
+        206: function(data){
+          var pawn_id = data["pawn_id"];
+          trigger_pawn_promotion_modal(pawn_id);
+        }
+      },
+      url: draggable.data('update-url'),
+      dataType: 'json',
+      data: { piece: {x_coord: x, y_coord: y}}, 
+      success: function (data) {
+        render_chess_board();
+        $(".notice-alert").html(data);
+      }  
   });
 }
 

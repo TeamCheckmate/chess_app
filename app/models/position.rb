@@ -1,6 +1,7 @@
 class Position < ActiveRecord::Base
 	belongs_to :game
-	belongs_to :piece
+
+	store_accessor :piece_data
 end
 
 
