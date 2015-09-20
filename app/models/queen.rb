@@ -26,6 +26,10 @@ class Queen < Piece
     [4]
   end
 
+  def type
+    "Queen"
+  end
+
   private
   def valid_vertical_move?(new_x, new_y)
     new_x == x_coord && new_y != y_coord

@@ -3,12 +3,20 @@ function render_chess_board() {
   var url = "/games/" + game_id + "/render_chess_board"
 
   $.get(url, function(data) {
+    console.log('data', data);
     $(".chess_board_partial").empty();
     $(".chess_board_partial").append(data.chess_board);
+    $(".move_list_partial").empty();
+    $(".move_list_partial").append(data.move_list);
   }).done(function() {
     draggable_droppable();
   })
 }
+
+//function render_move_list() {
+//  var game_id = $(".chess_board_partial").data('game-id');
+//  var url = "/games/" + game_id + "/render_chess_board"
+
 
 function draggable_droppable() {
   $( ".pieces" ).draggable({

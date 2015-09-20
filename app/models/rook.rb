@@ -5,6 +5,10 @@ class Rook < Piece
     # rook moves any number of squares in any direction
     valid_vertical_move?(new_x, new_y) || valid_horizontal_move?(new_x, new_y)
   end
+
+  def type
+    "Rook"
+  end
  
   def valid_moves
     valid_move =[]

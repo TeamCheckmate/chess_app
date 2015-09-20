@@ -37,6 +37,10 @@ class King < Piece
 		[3]
 	end
 
+        def type
+          "King"
+        end
+
 	private 
 
 	def valid_vertical_move?(new_x, new_y)

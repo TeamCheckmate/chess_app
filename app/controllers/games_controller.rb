@@ -14,7 +14,48 @@ class GamesController < ApplicationController
 	
 	def show 
 		@pieces = @game.pieces
+                @row_letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h']
+                @row_numbers = [1, 2, 3, 4, 5, 6, 7, 8] 
+                @white_moves, @black_moves = moves_to_string 
 	end
+
+        def moves_to_string
+                column_hash = {0 => 'h', 1 => 'g', 2 => 'f', 3 => 'e', 4 => 'd', 5 => 'c', 6 => 'b', 7 => 'a'}
+                white_moves = []
+                black_moves = []
+                @game.moves.each do |move|
+                  if move.castle
+                    move_str = "Castle"
+                  else
+                    case move.piece.type
+                    when "Pawn"
+                      letter = ""
+                    when "King"
+                      letter = "K"
+                    when "Queen"
+                      letter = "Q"
+                    when "Knight"
+                      letter = "N"
+                    when "Rook"
+                      letter = "R"
+                    when "Bishop"
+                      letter = "B"
+                    end
+                  if move.take
+                    connect = 'x'
+                  else
+                    connect = '->'
+                  end
+                  move_str = letter + column_hash[move.old_x] + (move.old_y + 1).to_s + connect + column_hash[move.x_coord] + (move.y_coord + 1).to_s
+                  end
+                  if move.piece.color == 'white'
+                    white_moves << move_str
+                  else
+                    black_moves << move_str
+                  end
+               end
+               return white_moves, black_moves
+        end  
 
 	def check_pawn_promotion
 		pawns = @game.pieces.where(:piece_type => 'Pawn')
@@ -28,12 +69,12 @@ class GamesController < ApplicationController
 			end
 			
 			if pawn_id == -1
-				render :nothing
+				render :nothing => true
 			else
 				render :json => {:pawn_id => pawn_id }
 			end
 		else
-			render :nothing
+			render :nothing => true
 		end
 
 
@@ -51,12 +92,22 @@ class GamesController < ApplicationController
 	end
 
 	def render_chess_board
+                @white_moves, @black_moves = moves_to_string
 		render :json => {
 				:chess_board => render_to_string( {
 				:partial => "chess_board",
-				:locals => { game: current_game }
-				})
-		}	
+				:locals => { game: current_game,
+                                             row_letters: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
+                                             row_numbers: [1, 2, 3, 4, 5, 6, 7, 8]
+                                  }
+				}),
+                                :move_list => render_to_string({
+                                  :partial => "move_list",
+                                  :locals => { white_moves: @white_moves,
+                                               black_moves: @black_moves
+                                             }
+                                })
+		}
 	end
 
 	private

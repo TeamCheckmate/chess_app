@@ -44,6 +44,10 @@ class Pawn < Piece
     valid_move
   end
 
+  def type
+    "Pawn"
+  end
+
   private 
   def valid_vertical_move?(new_y, new_x)
     y_within_one?(new_y) && same_x?(new_x)
@@ -93,5 +97,4 @@ class Pawn < Piece
   def x_within_one?(new_x)
     (new_x - x_coord).abs == 1 
   end
-
 end

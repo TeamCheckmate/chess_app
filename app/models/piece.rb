@@ -7,10 +7,13 @@ class Piece < ActiveRecord::Base
 
   validate :x_coord, :y_coord, presence: true
 
-  def create_move!
+  def type
+  end
+
+  def create_move!(old_x, old_y, castle, take_piece)
   #need to find game associated with piece  
     moved_piece = self.game.pieces.order("updated_at").last 
-    Move.create(:game_id => moved_piece.game.id, :piece_id => moved_piece.id, :x_coord => moved_piece.x_coord, :y_coord => moved_piece.y_coord)
+    Move.create(:game_id => moved_piece.game.id, :piece_id => moved_piece.id, :x_coord => moved_piece.x_coord, :y_coord => moved_piece.y_coord, :old_x => old_x, :old_y => old_y, :castle => castle, :take => take_piece)
     self.game.switch_turn
   end
 
@@ -48,12 +51,16 @@ class Piece < ActiveRecord::Base
     if what_type?("King") && self.game.castle?(new_x, self.color)
       if new_x > self.x_coord 
         rook = self.game.pieces.where(:x_coord => 7, :y_coord => self.y_coord).first
+        old_x = rook.x_coord
+        old_y = rook.y_coord
         rook.update_attributes(:x_coord => new_x - 1)
-        self.create_move!
+        self.create_move!(old_x, old_y, true, false)
       else
         rook = self.game.pieces.where(:x_coord => 0, :y_coord => self.y_coord).first
+        old_x = rook.x_coord
+        old_y = rook.y_coord
         rook.update_attributes(:x_coord => new_x + 1)
-        self.create_move!
+        self.create_move!(old_x, old_y, true, false)
       end
 
       self.update(:x_coord => new_x, :y_coord => new_y)
@@ -68,8 +75,10 @@ class Piece < ActiveRecord::Base
       check_y = new_y + operation
       behind_piece = self.game.square_occupied(new_x, check_y).first
       behind_piece.update_attributes(:x_coord => nil, :y_coord => nil)
+      old_x = self.x_coord
+      old_y = self.y_coord
       self.update(:x_coord => new_x, :y_coord => new_y)
-      self.create_move!
+      self.create_move!(old_x, old_y, false, true)
       return :reload
     end
 
@@ -84,13 +93,13 @@ class Piece < ActiveRecord::Base
       self.update_attributes(:x_coord => old_x, :y_coord => old_y)
       return :invalid_move
     elsif pawn_promotion?
-      self.create_move!
+      self.create_move!(old_x, old_y, false, false)
       return :pawn_promote
     elsif destn_piece.nil?
-      self.create_move!
+      self.create_move!(old_x, old_y, false, false)
       return :valid_move
     else 
-      self.create_move!
+      self.create_move!(old_x, old_y, false, true)
       return :reload
     end
   end

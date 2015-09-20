@@ -20,6 +20,10 @@ class Bishop < Piece
     [2, 5]
   end
 
+  def type
+    "Bishop"
+  end
+
   private
   def valid_diagonal_move?(new_x, new_y)
     x_distance(new_x) == y_distance(new_y) && x_distance(new_x) != 0
@@ -32,4 +36,5 @@ class Bishop < Piece
   def y_distance(new_y)
     (new_y - y_coord).abs
   end
+
 end

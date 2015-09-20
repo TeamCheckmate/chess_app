@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150518174634) do
+ActiveRecord::Schema.define(version: 20150920020733) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -21,9 +21,8 @@ ActiveRecord::Schema.define(version: 20150518174634) do
     t.integer  "black_player_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "title"
-    t.string   "turn"
     t.string   "playerturn",      default: "white"
+    t.string   "title"
   end
 
   create_table "moves", force: true do |t|
@@ -33,6 +32,10 @@ ActiveRecord::Schema.define(version: 20150518174634) do
     t.integer  "y_coord"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "old_x"
+    t.integer  "old_y"
+    t.boolean  "castle"
+    t.boolean  "take"
   end
 
   add_index "moves", ["game_id"], name: "index_moves_on_game_id", using: :btree

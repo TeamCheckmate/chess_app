@@ -28,6 +28,10 @@ class Knight < Piece
   def original_x_coord
     [1, 6]
   end
+
+  def type
+    "Knight"
+  end
   
   private
 
