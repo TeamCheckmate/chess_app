@@ -5,20 +5,20 @@
 	  	<%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
 	  	<%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
 	  	<meta name="viewport" content ="width=device-width, initial-scale=1">
-                <link href="assets/css/bootstrap-responsive.css" rel="stylesheet">
 	  	<%= csrf_meta_tags %>
 	  	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
 		<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
 	</head>
 	<body>
 		<%= render "layouts/nav"%>
+              
 		<div class= "notice-alert col-xs-12 col-sm-6 col-sm-offset-3" >
 			<%= render "layouts/notice_alert"%>
 		</div>
-
+           
 		<br class="clear"/>
-
-		<div class="container-fluid">
+             
+		<div id="body_container" class="container-fluid">
 			<%= yield %>
 		</div>
 	</body>
